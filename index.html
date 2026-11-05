@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kanıt Panosu</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="view"><div id="world">
+  <svg id="strings" width="4000" height="3000"></svg>
+  <canvas id="draw" width="4000" height="3000"></canvas>
+</div></div>
+
+<div id="bar">
+  <div class="grp" id="modes">
+    <button data-m="select" class="on" title="Seç / taşı (V)">Seç</button>
+    <button data-m="thread" title="İki karta sırayla tıkla (T)">İp</button>
+    <button data-m="pen" title="İnce kalem (P)">Kalem</button>
+    <button data-m="marker" title="Kalın işaretleyici (M)">İşaretleyici</button>
+    <button data-m="eraser" title="Silgi (E)">Silgi</button>
+    <button data-m="stamp" title="Mühür (S): karta veya panoya tıkla">Mühür</button>
+    <select id="stampType"><option>CONFIDENTIAL</option><option>SUSPECT</option></select>
+  </div>
+  <input type="color" id="color" value="#c1121f" title="İp ve kalem rengi">
+  <div class="grp">
+    <button id="addPolaroid">+ Polaroid</button>
+    <button id="addNews">+ Gazete</button>
+    <button id="addNote">+ Not</button>
+    <button id="addDoc">+ Belge</button>
+    <button id="addTl">+ Zaman çizelgesi</button>
+    <input type="file" id="file" accept="image/*" hidden>
+  </div>
+  <div class="grp">
+    <button id="lensBtn">Büyüteç</button>
+    <button id="del">Seçileni sil</button>
+    <button id="clear">Çizimi sil</button>
+    <button id="saveJson">Kaydet</button><button id="openJson">Aç</button><input type="file" id="jsonFile" accept=".json" hidden>
+  </div>
+  <div class="grp">
+    <select id="fmt"><option value="png1">PNG 1x</option><option value="png2" selected>PNG 2x</option><option value="png3">PNG 3x</option><option value="A4">A4 PDF · 300 DPI</option><option value="A3">A3 PDF · 300 DPI</option><option value="POSTER">Poster 70x100 PDF · 300 DPI</option></select>
+    <button id="png" class="main">İndir</button>
+  </div>
+</div>
+<div id="lens" hidden><div id="lw"></div></div>
+<p id="hint">Tekerlek: yakınlaştır · Boş alanı sürükle: gezin · İpe tıkla: etiket ekle, Shift+tık: ipi sil · Çift tıkla: mührü sil · Pano otomatik kaydedilir</p>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
