@@ -32,6 +32,8 @@
     <input type="file" id="file" accept="image/*" hidden>
   </div>
   <div class="grp">
+    <select id="cat" title="Seçili kartın sınıfı" disabled><option>Şüpheli</option><option>Mekan</option><option>Delil</option><option>Tanık</option><option>Zaman</option><option>Diğer</option></select>
+    <button id="smaller" title="Küçült (-)">−</button><button id="bigger" title="Büyüt (+)">+</button>
     <button id="lensBtn">Büyüteç</button>
     <button id="del">Seçileni sil</button>
     <button id="clear">Çizimi sil</button>
@@ -42,8 +44,9 @@
     <button id="png" class="main">İndir</button>
   </div>
 </div>
+<div id="legend"></div>
 <div id="lens" hidden><div id="lw"></div></div>
-<p id="hint">Tekerlek: yakınlaştır · Boş alanı sürükle: gezin · İpe tıkla: etiket ekle, Shift+tık: ipi sil · Çift tıkla: mührü sil · Pano otomatik kaydedilir</p>
+<p id="hint">Tekerlek: yakınlaştır · Boş alanı sürükle: gezin · İpe tıkla: etiket ekle, Shift+tık: ipi sil · Çift tıkla: mührü sil · Seçili kartta sarı noktayı sürükle: boyut · +/− boyut, [ ] döndür · Pano otomatik kaydedilir</p>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>

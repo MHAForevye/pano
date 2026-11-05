@@ -36,24 +36,27 @@ view.addEventListener('pointerdown', e => {
 function addCard(type, img, pos) {
   const c = document.createElement('div');
   c.className = 'card ' + ({ pol: 'polaroid', note: 'note', news: 'news', doc: 'doc', tick: 'tick' })[type];
-  c.innerHTML = T[type];
+  c.innerHTML = T[type]; c.dataset.cat = DEF[type]; ensure(c);
   if (img) c.querySelector('img').src = img;
   const p = toWorld({ clientX: innerWidth / 2, clientY: innerHeight / 2 });
   c.style.left = p.x - 100 + (Math.random() * 120 - 60) + 'px';
   c.style.top = p.y - 120 + (Math.random() * 120 - 60) + 'px';
-  c.style.transform = `rotate(${(Math.random() * 8 - 4).toFixed(1)}deg)`;
+  c.dataset.r = (Math.random() * 8 - 4).toFixed(1); c.dataset.s = 1; tf(c);
   c.style.zIndex = ++zTop % 1 ? 1 : 1;
   if (pos) { c.style.left = pos[0] + 'px'; c.style.top = pos[1] + 'px'; }
-  world.appendChild(c); select(c); return c;
+  world.appendChild(c); select(c); save(); return c;
 }
 
-function select(c) { if (sel) sel.classList.remove('sel'); sel = c; if (c) c.classList.add('sel'); }
+function select(c) { if (sel) sel.classList.remove('sel'); sel = c; if (c) c.classList.add('sel'); syncCat(); }
 
 world.addEventListener('pointerdown', e => {
+  if (e.target.classList.contains('rz')) return startResize(e, e.target.parentNode);
   if (mode === 'stamp' && !e.target.closest('.stamp')) return stampAt(e);
   const c = e.target.closest('.card'); if (!c) return;
   if (mode === 'thread') return threadClick(c);
-  if (mode !== 'select' || e.target.isContentEditable) return;
+  if (mode !== 'select') return;
+  select(c);
+  if (e.target.isContentEditable) return;
   select(c);
   const p = toWorld(e), ox = p.x - c.offsetLeft, oy = p.y - c.offsetTop;
   const mv = m => { const q = toWorld(m); c.style.left = q.x - ox + 'px'; c.style.top = q.y - oy + 'px'; drawThreads(); };
@@ -184,20 +187,20 @@ addEventListener('pointermove', e => {
 const KEY = 'kanit-panosu-v1', items = () => [...world.querySelectorAll(':scope > .card, :scope > .stamp, :scope > .tl')];
 function snapshot() {
   const els = items();
-  return { html: els.map(e => { const c = e.cloneNode(true); c.classList.remove('sel', 'from'); return c.outerHTML; }),
+  return { html: els.map(e => { const c = e.cloneNode(true); c.classList.remove('sel', 'from', 'dim'); return c.outerHTML; }),
     threads: threads.map(t => ({ a: els.indexOf(t.a), b: els.indexOf(t.b), color: t.color, label: t.label || '' })), draw: cv.toDataURL() };
 }
 function restore(d) {
   items().forEach(e => e.remove());
   const h = document.createElement('div'); h.innerHTML = d.html.join(''); const els = [...h.children];
-  els.forEach(e => world.appendChild(e));
+  els.forEach(e => { world.appendChild(e); if (e.classList.contains('card')) ensure(e); });
   threads = d.threads.filter(t => els[t.a] && els[t.b]).map(t => ({ a: els[t.a], b: els[t.b], color: t.color, label: t.label }));
   ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1; ctx.clearRect(0, 0, 4000, 3000);
   if (d.draw) { const im = new Image(); im.onload = () => ctx.drawImage(im, 0, 0); im.src = d.draw; }
-  sel = null; drawThreads();
+  sel = null; drawThreads(); legend();
 }
 let st;
-function save() { clearTimeout(st); st = setTimeout(() => { try { localStorage.setItem(KEY, JSON.stringify(snapshot())); } catch (e) {} lensRefresh(); }, 600); }
+function save() { legend(); clearTimeout(st); st = setTimeout(() => { try { localStorage.setItem(KEY, JSON.stringify(snapshot())); } catch (e) {} lensRefresh(); }, 600); }
 addEventListener('pointerup', save); addEventListener('input', save);
 $('#saveJson').onclick = () => { const a = document.createElement('a'); a.download = 'pano.json';
   a.href = URL.createObjectURL(new Blob([JSON.stringify(snapshot())], { type: 'application/json' })); a.click(); };
@@ -210,7 +213,7 @@ $('#png').onclick = async () => {
   if (!window.html2canvas) return alert('Dışa aktarma kütüphanesi yüklenemedi. İnternet bağlantınızı kontrol edin.');
   const f = $('#fmt').value, P = { A4: [297, 210], A3: [420, 297], POSTER: [1000, 700] }[f];   // mm, yatay
   const sc = P ? Math.min(P[0] / 25.4 * 300 / 4000, P[1] / 25.4 * 300 / 3000) : +f.slice(3);
-  select(null); const old = world.style.transform; world.style.transform = 'none';
+  select(null); flt = null; legend(); const old = world.style.transform; world.style.transform = 'none';
   try {
     const c = await html2canvas(world, { scale: sc, backgroundColor: null, useCORS: true });
     if (!P) { const a = document.createElement('a'); a.download = 'kanit-panosu.png'; a.href = c.toDataURL('image/png'); a.click(); }
@@ -222,6 +225,52 @@ $('#png').onclick = async () => {
   } catch (e) { alert('Dışa aktarma başarısız oldu. Poster boyutu tarayıcı belleğini aşmış olabilir; A3 veya PNG 2x dene.'); }
   finally { world.style.transform = old; }
 };
+
+/* ---------- Boyut, sınıf, doku ---------- */
+const CATS = { 'Şüpheli': '#c1121f', 'Mekan': '#1d6fb8', 'Delil': '#2a7f3e', 'Tanık': '#d9730d', 'Zaman': '#7b3fa0', 'Diğer': '#555' };
+const DEF = { pol: 'Şüpheli', note: 'Tanık', news: 'Delil', doc: 'Delil', tick: 'Zaman' };
+let flt = null;
+const tf = c => c.style.transform = `rotate(${c.dataset.r || 0}deg) scale(${c.dataset.s || 1})`;
+
+function ensure(c) {
+  if (!c.querySelector('.rz')) { const z = document.createElement('div'); z.className = 'rz'; c.appendChild(z); }
+  let t = c.querySelector('.tag');
+  if (!t) { t = document.createElement('div'); t.className = 'tag'; c.appendChild(t); }
+  const k = CATS[c.dataset.cat] ? c.dataset.cat : 'Diğer';
+  t.textContent = k; t.style.background = CATS[k];
+}
+function startResize(e, c) {
+  e.preventDefault(); const x0 = e.clientX, s0 = +c.dataset.s || 1, w = c.offsetWidth;
+  const mv = m => { c.dataset.s = Math.min(3, Math.max(.4, s0 + (m.clientX - x0) / v.k / w)).toFixed(2); tf(c); drawThreads(); };
+  const up = () => { removeEventListener('pointermove', mv); removeEventListener('pointerup', up); };
+  addEventListener('pointermove', mv); addEventListener('pointerup', up);
+}
+function nudge(ds, dr) {
+  if (!sel) return;
+  sel.dataset.s = Math.min(3, Math.max(.4, (+sel.dataset.s || 1) + ds)).toFixed(2); sel.dataset.r = (+sel.dataset.r || 0) + dr;
+  tf(sel); drawThreads(); save();
+}
+$('#bigger').onclick = () => nudge(.1, 0); $('#smaller').onclick = () => nudge(-.1, 0);
+addEventListener('keydown', e => {
+  if (e.target.isContentEditable || !sel) return;
+  ({ '+': () => nudge(.1, 0), '=': () => nudge(.1, 0), '-': () => nudge(-.1, 0), '[': () => nudge(0, -3), ']': () => nudge(0, 3) })[e.key]?.();
+});
+
+function syncCat() { const s = $('#cat'); s.disabled = !sel; if (sel) s.value = CATS[sel.dataset.cat] ? sel.dataset.cat : 'Diğer'; }
+$('#cat').onchange = e => { if (sel) { sel.dataset.cat = e.target.value; ensure(sel); legend(); save(); } };
+function legend() {
+  const n = {}; world.querySelectorAll(':scope > .card').forEach(c => { const k = c.dataset.cat || 'Diğer'; n[k] = (n[k] || 0) + 1; });
+  $('#legend').innerHTML = Object.keys(CATS).map(k => `<button data-k="${k}" class="${flt === k ? 'on' : ''}"><i style="background:${CATS[k]}"></i>${k}<em>${n[k] || 0}</em></button>`).join('');
+  world.querySelectorAll(':scope > .card').forEach(c => c.classList.toggle('dim', !!flt && (c.dataset.cat || 'Diğer') !== flt));
+}
+$('#legend').onclick = e => { const b = e.target.closest('button'); if (b) { flt = flt === b.dataset.k ? null : b.dataset.k; legend(); } };
+
+/* Metne ilk tıklamada tüm yazı seçilir: tek tuşla silinir ya da üstüne yazılır */
+world.addEventListener('focusin', e => {
+  const t = e.target; if (!t.isContentEditable || t.dataset.d) return;
+  setTimeout(() => { const r = document.createRange(); r.selectNodeContents(t); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }, 0);
+});
+world.addEventListener('input', e => { if (e.target.isContentEditable) e.target.dataset.d = 1; });
 
 /* ---------- Başlangıç ---------- */
 try { const d = JSON.parse(localStorage.getItem(KEY)); if (d) restore(d); else throw 0; } catch (e) { addCard('news'); addCard('note'); }

@@ -1,6 +1,6 @@
 # Kanıt Panosu
 
-Polisiye dizilerdeki kanıt panosunu tarayıcıda kuran, bağımlılıksız web uygulaması..
+Polisiye dizilerdeki kanıt panosunu tarayıcıda kuran, bağımlılıksız web uygulaması.
 
 ## Çalıştırma
 `index.html` dosyasını tarayıcıda açın. PDF/PNG dışa aktarma için html2canvas ve jsPDF CDN'den yüklenir (internet gerekir).
@@ -15,6 +15,10 @@ Settings → Pages → Branch: `main` / `(root)` → Save. Adres: `https://KULLA
 - Renkli sarkan iplar; ipe tıklayınca bantlı not etiketi, Shift+tık ile silme
 - Zaman çizelgesi: cetvel + düzenlenebilir etiketler, iplerle bağlanabilir
 - İnce kalem, kalın işaretleyici, silgi
+- Kartlar boyutlandırılır (köşedeki sarı nokta, +/−) ve döndürülür ([ ])
+- Sınıflandırma: Şüpheli / Mekan / Delil / Tanık / Zaman; kart etiketi, renkli sınıf paneli ve filtre
+- Kağıt dokusu, yıpranmış kenar, katlama izi, bant
+- Metne ilk tıklamada yazı seçili gelir (tek tuşla silinir)
 - Otomatik kayıt (localStorage) ve JSON proje dosyası
 - PNG (1x/2x/3x) ve A4 / A3 / poster 70x100 PDF (300 DPI)
 
