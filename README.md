@@ -1,6 +1,6 @@
 # Kanıt Panosu
 
-Polisiye dizilerdeki kanıt panosunu tarayıcıda kuran, bağımlılıksız web uygulaması.
+Polisiye dizilerdeki kanıt panosunu tarayıcıda kuran, bağımlılıksız web uygulaması..
 
 ## Çalıştırma
 `index.html` dosyasını tarayıcıda açın. PDF/PNG dışa aktarma için html2canvas ve jsPDF CDN'den yüklenir (internet gerekir).
