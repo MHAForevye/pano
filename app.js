@@ -265,7 +265,7 @@ function bounds() {
 }
 $('#png').onclick = async () => {
   if (!window.html2canvas) return alert('Dışa aktarma kütüphanesi yüklenemedi. İnternet bağlantınızı kontrol edin.');
-  const f = $('#fmt').value, n = +$('#split').value, M = 6, P = { A4: [297, 210], A3: [420, 297], POSTER: [1000, 700] }[f];
+  const f = $('#fmt').value, n = +$('#split').value, M0 = 6, P = { A4: [297, 210], A3: [420, 297], POSTER: [1000, 700] }[f];
   select(null); flt = null; legend(); const old = world.style.transform; world.style.transform = 'none'; const baked = [];
   try {
     if ('filter' in ctx) for (const im of world.querySelectorAll('.polaroid img')) {
@@ -275,19 +275,28 @@ $('#png').onclick = async () => {
       baked.push([im, im.src, im.style.filter]); im.src = c.toDataURL('image/jpeg', .92); im.style.filter = 'none'; await im.decode().catch(() => {});
     }
     let b = $('#fit').checked ? bounds() : { x: 0, y: 0, w: 4000, h: 3000 }, pw, ph;
-    if (P) {                                              // içeriğe göre yatay/dikey, sayfa oranına genişlet
-      const land = b.w >= b.h; pw = land ? P[0] : P[1]; ph = land ? P[1] : P[0];
+    const M = P ? M0 : 0, Q = P || (n > 1 ? [297, 210] : null);   // PNG bölmede de A4 oranı
+    if (Q) {                                              // içeriğe göre yatay/dikey, sayfa oranına genişlet
+      const land = b.w >= b.h; pw = land ? Q[0] : Q[1]; ph = land ? Q[1] : Q[0];
       const A = (pw - 2 * M) / (ph - 2 * M), cx = b.x + b.w / 2, cy = b.y + b.h / 2;
       if (b.w / b.h < A) b.w = b.h * A; else b.h = b.w / A;
       b.x = b.w <= 4000 ? Math.min(Math.max(cx - b.w / 2, 0), 4000 - b.w) : cx - b.w / 2;
       b.y = b.h <= 3000 ? Math.min(Math.max(cy - b.h / 2, 0), 3000 - b.h) : cy - b.h / 2;
     }
-    const sc = P ? Math.min(2, n * (pw - 2 * M) / 25.4 * 300 / b.w) : +f.slice(3);
+    const sc = P ? Math.min(2, n * (pw - 2 * M) / 25.4 * 300 / b.w) : n > 1 ? Math.min(2.5, Math.max(+f.slice(3), n * 2480 / b.w)) : +f.slice(3);
     const big = await html2canvas(world, { scale: sc, backgroundColor: null, useCORS: true });
     const rw = Math.round(b.w * sc), rh = Math.round(b.h * sc), out = document.createElement('canvas');
     out.width = rw; out.height = rh; const o = out.getContext('2d');
     o.fillStyle = '#3a2a1c'; o.fillRect(0, 0, rw, rh); o.drawImage(big, -b.x * sc, -b.y * sc, 4000 * sc, 3000 * sc);
-    if (!P) { const a = document.createElement('a'); a.download = 'mantar-pano.png'; a.href = out.toDataURL('image/png'); a.click(); return; }
+    if (!P) {                                             // PNG: her parça ayrı dosya
+      for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
+        const t = document.createElement('canvas'); t.width = Math.round(rw / n); t.height = Math.round(rh / n);
+        t.getContext('2d').drawImage(out, -c * rw / n, -r * rh / n);
+        const a = document.createElement('a'); a.download = n > 1 ? `mantar-pano-parca-${r * n + c + 1}-${n * n}.png` : 'mantar-pano.png';
+        a.href = t.toDataURL('image/png'); a.click(); await new Promise(z => setTimeout(z, 600));
+      }
+      return;
+    }
     const d = new window.jspdf.jsPDF({ orientation: pw > ph ? 'landscape' : 'portrait', unit: 'mm', format: [pw, ph] }), tw = rw / n, th = rh / n;
     for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
       const t = document.createElement('canvas'); t.width = Math.round(tw); t.height = Math.round(th);

@@ -15,3 +15,4 @@ Mantar pano üzerinde fikir, ders notu, plan ya da eğlence için bağımlılık
 - PNG (1x/2x/3x) ve A4 / A3 / Poster PDF
   - **Dolu alana sığdır**: boş kenarları keser, sayfayı doldurur
   - **4 sayfaya böl (2×2)** veya 9 sayfa: pano büyük çıkar, sayfaları yan yana yapıştırın
+  - PNG'de bölme seçilirse her parça ayrı bir A4 oranlı PNG olarak iner (tarayıcı çoklu indirme izni isteyebilir)
