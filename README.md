@@ -1,31 +1,17 @@
-# Kanıt Panosu
+# Mantar Pano
 
-Polisiye dizilerdeki kanıt panosunu tarayıcıda kuran, bağımlılıksız web uygulaması.
+Mantar pano üzerinde fikir, ders notu, plan ya da eğlence için bağımlılıksız web aracı.
 
 ## Çalıştırma
-`index.html` dosyasını tarayıcıda açın. PDF/PNG dışa aktarma için html2canvas ve jsPDF CDN'den yüklenir (internet gerekir).
-
-## GitHub Pages
-Settings → Pages → Branch: `main` / `(root)` → Save. Adres: `https://KULLANICI.github.io/REPO/`
+`index.html` dosyasını tarayıcıda açın. PDF/PNG çıktı için html2canvas ve jsPDF CDN'den yüklenir (internet gerekir).
 
 ## Özellikler
-- Mantar pano, tekerlekle zoom, sürükleyerek pan, büyüteç (2.5x)
-- Polaroid (fotoğraf yükleme + el yazısı), gazete kupürü, yapışkan not, daktilo fontlu manila belge
-- CONFIDENTIAL / SUSPECT mühürleri (karta veya panoya tıkla, çift tıkla sil)
-- Renkli sarkan iplar; ipe tıklayınca bantlı not etiketi, Shift+tık ile silme
-- Zaman çizelgesi: cetvel + düzenlenebilir etiketler, iplerle bağlanabilir
-- İnce kalem, kalın işaretleyici, silgi
-- Kartlar boyutlandırılır (köşedeki sarı nokta, +/−) ve döndürülür ([ ])
-- Sınıflandırma: Şüpheli / Mekan / Delil / Tanık / Zaman; kart etiketi, renkli sınıf paneli ve filtre
-- Kağıt dokusu, yıpranmış kenar, katlama izi, bant
-- Metne ilk tıklamada yazı seçili gelir (tek tuşla silinir)
-- Otomatik kayıt (localStorage) ve JSON proje dosyası
-- PNG (1x/2x/3x) ve A4 / A3 / poster 70x100 PDF (300 DPI)
-
-## Kısayollar
-V seç · T ip · P kalem · M işaretleyici · E silgi · S mühür · Delete kartı sil
-
-## Bilinen sınırlar / sıradaki işler
-- Poster PDF çok bellek kullanır; olmazsa A3 deneyin
-- Geri al (undo) yok
-- Büyüteç, pano değişince kısa gecikmeyle yenilenir
+- Mantar pano, zoom, gezinme, büyüteç
+- Fotoğraf, kupür, yapışkan not, kâğıt, zaman çizelgesi; mühürler (ÖNEMLİ, SINAV, DOĞRU...)
+- Kalem / işaretleyici / silgi: gerçek alet imleci, renk ve kalınlık ayarı
+- Kartları serbest açıyla döndürme: üstteki ↻ noktası (Shift = 15° adım) veya Açı kaydırıcısı
+- Sınıflar: Önemli / Fikir / Soru / Örnek / Tarih / Diğer, filtre
+- Otomatik kayıt, JSON kaydet/aç
+- PNG (1x/2x/3x) ve A4 / A3 / Poster PDF
+  - **Dolu alana sığdır**: boş kenarları keser, sayfayı doldurur
+  - **4 sayfaya böl (2×2)** veya 9 sayfa: pano büyük çıkar, sayfaları yan yana yapıştırın

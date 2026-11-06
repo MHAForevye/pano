@@ -2,9 +2,9 @@
 const $ = s => document.querySelector(s);
 const view = $('#view'), world = $('#world'), svg = $('#strings'), cv = $('#draw'), ctx = cv.getContext('2d');
 const NS = 'http://www.w3.org/2000/svg';
-const T = { pol: '<div class="pin"></div><img alt=""><div class="cap" contenteditable spellcheck="false">ŞÜPHELİ A</div>',
-  note: '<div class="pin"></div><div contenteditable spellcheck="false">Saat 22:00\'de görüldü</div>',
-  news: '<div class="pin"></div><h3 contenteditable spellcheck="false">GİZEMLİ KAYIP</h3><p contenteditable spellcheck="false">Haber metnini buraya yazın. Başlığı ve metni istediğiniz gibi değiştirebilirsiniz.</p>' };
+const T = { pol: '<div class="pin"></div><img alt=""><div class="cap" contenteditable spellcheck="false">Başlık</div>',
+  note: '<div class="pin"></div><div contenteditable spellcheck="false">Aklında tut: önemli fikir</div>',
+  news: '<div class="pin"></div><h3 contenteditable spellcheck="false">MANŞET BURADA</h3><p contenteditable spellcheck="false">Metni buraya yazın: ders özeti, haber, bilgi... Başlığı ve metni istediğiniz gibi değiştirebilirsiniz.</p>' };
 
 let v = { x: -900, y: -600, k: .8 }, mode = 'select', threads = [], from = null, sel = null, zTop = 1;
 
@@ -51,6 +51,7 @@ function select(c) { if (sel) sel.classList.remove('sel'); sel = c; if (c) c.cla
 
 world.addEventListener('pointerdown', e => {
   if (e.target.classList.contains('rz')) return startResize(e, e.target.parentNode);
+  if (e.target.classList.contains('rt')) return startRotate(e, e.target.parentNode);
   if (mode === 'stamp' && !e.target.closest('.stamp')) return stampAt(e);
   const c = e.target.closest('.card'); if (!c) return;
   if (mode === 'thread') return threadClick(c);
@@ -109,7 +110,7 @@ function drawThreads() {
 cv.addEventListener('pointerdown', e => {
   if (!['pen', 'marker', 'eraser'].includes(mode)) return;
   const m = mode === 'marker', er = mode === 'eraser';
-  ctx.strokeStyle = $('#color').value; ctx.lineWidth = er ? 30 : m ? 18 : 3; ctx.lineCap = ctx.lineJoin = 'round';
+  ctx.strokeStyle = $('#color').value; const sz = +$('#size').value; ctx.lineWidth = er ? sz * 10 : m ? sz * 6 : sz; ctx.lineCap = ctx.lineJoin = 'round';
   ctx.globalAlpha = m ? .4 : 1; ctx.globalCompositeOperation = er ? 'destination-out' : 'source-over';
   let l = toWorld(e); cv.setPointerCapture(e.pointerId);
   const mv = ev => { const q = toWorld(ev); ctx.beginPath(); ctx.moveTo(l.x, l.y); ctx.lineTo(q.x, q.y); ctx.stroke(); l = q; };
@@ -117,11 +118,24 @@ cv.addEventListener('pointerdown', e => {
   cv.addEventListener('pointermove', mv); cv.addEventListener('pointerup', up);
 });
 
+/* ---------- Kalem imleci (görsel) ---------- */
+function updateCursor() {
+  const c = $('#color').value, o = 'stroke="#222" stroke-width="1.4" stroke-linejoin="round"';
+  const S = {
+    pen: [`<polygon points="2,30 6,20 12,26" fill="#f1d9a8" ${o}/><polygon points="2,30 4,25 7,28" fill="${c}" ${o}/><polygon points="6,20 22,4 28,10 12,26" fill="${c}" ${o}/><polygon points="22,4 25,1 31,7 28,10" fill="#f4a6b6" ${o}/>`, 2, 30],
+    marker: [`<polygon points="2,30 5,22 10,27" fill="${c}" ${o}/><polygon points="5,22 21,6 27,12 10,27" fill="#444" ${o}/><polygon points="21,6 24,3 30,9 27,12" fill="${c}" ${o}/>`, 2, 30],
+    eraser: [`<rect x="5" y="12" width="22" height="16" rx="3" fill="#f4a6b6" ${o}/><rect x="5" y="12" width="9" height="16" rx="3" fill="#fff" ${o}/>`, 16, 20]
+  }[mode];
+  cv.style.cursor = S ? `url("data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32">${S[0]}</svg>`)}") ${S[1]} ${S[2]}, crosshair` : '';
+}
+$('#color').addEventListener('input', updateCursor);
+
 /* ---------- Araç çubuğu ---------- */
 function setMode(m) {
   mode = m; document.body.dataset.m = m;
   document.querySelectorAll('#modes button').forEach(b => b.classList.toggle('on', b.dataset.m === m));
   if (from) { from.classList.remove('from'); from = null; }
+  updateCursor();
 }
 $('#modes').addEventListener('click', e => e.target.dataset.m && setMode(e.target.dataset.m));
 $('#addNote').onclick = () => addCard('note');
@@ -143,7 +157,7 @@ addEventListener('keydown', e => {
 
 /* ---------- Mühür, belge, zaman çizelgesi ---------- */
 Object.assign(T, {
-  doc: '<div class="pin"></div><div contenteditable spellcheck="false"><b>OTOPSİ RAPORU</b><br>Dosya No: 0042<br>Ölüm saati: 21:40 - 22:15<br>Neden: künt travma<br>Not: Boğuşma izi yok.</div>',
+  doc: '<div class="pin"></div><div contenteditable spellcheck="false"><b>DERS NOTU</b><br>Konu: ...<br>• Madde 1<br>• Madde 2<br>• Madde 3</div>',
   tick: '<div class="pin"></div><div contenteditable spellcheck="false">Etiket</div>' });
 $('#addDoc').onclick = () => addCard('doc');
 
@@ -161,7 +175,7 @@ $('#addTl').onclick = () => {
   const p = toWorld({ clientX: innerWidth / 2, clientY: innerHeight * .8 }), x0 = p.x - 500;
   const bar = document.createElement('div'); bar.className = 'tl';
   bar.style.cssText = `left:${x0 - 60}px;top:${p.y + 40}px;width:1220px`; world.appendChild(bar);
-  ['1 Gün Önce', 'Olay Günü', 'Cinayet Anı'].forEach((l, i) =>
+  ['Başlangıç', 'Gelişme', 'Sonuç'].forEach((l, i) =>
     addCard('tick', null, [x0 + i * 500, p.y]).querySelector('div:not(.pin)').textContent = l);
   select(null); save();
 };
@@ -184,7 +198,7 @@ addEventListener('pointermove', e => {
 });
 
 /* ---------- Kayıt (otomatik + JSON) ---------- */
-const KEY = 'kanit-panosu-v1', items = () => [...world.querySelectorAll(':scope > .card, :scope > .stamp, :scope > .tl')];
+const KEY = 'mantar-pano-v2', items = () => [...world.querySelectorAll(':scope > .card, :scope > .stamp, :scope > .tl')];
 function snapshot() {
   const els = items();
   return { html: els.map(e => { const c = e.cloneNode(true); c.classList.remove('sel', 'from', 'dim'); return c.outerHTML; }),
@@ -202,37 +216,65 @@ function restore(d) {
 let st;
 function save() { legend(); clearTimeout(st); st = setTimeout(() => { try { localStorage.setItem(KEY, JSON.stringify(snapshot())); } catch (e) {} lensRefresh(); }, 600); }
 addEventListener('pointerup', save); addEventListener('input', save);
-$('#saveJson').onclick = () => { const a = document.createElement('a'); a.download = 'pano.json';
+$('#saveJson').onclick = () => { const a = document.createElement('a'); a.download = 'mantar-pano.json';
   a.href = URL.createObjectURL(new Blob([JSON.stringify(snapshot())], { type: 'application/json' })); a.click(); };
 $('#openJson').onclick = () => $('#jsonFile').click();
 $('#jsonFile').onchange = e => { const f = e.target.files[0]; if (!f) return;
   f.text().then(t => { restore(JSON.parse(t)); save(); }).catch(() => alert('Geçersiz proje dosyası.')); e.target.value = ''; };
 
-/* ---------- PNG / PDF dışa aktarma (300 DPI) ---------- */
+/* ---------- PNG / PDF dışa aktarma ---------- */
+function bounds() {
+  const W = 4000, H = 3000, w0 = world.getBoundingClientRect();
+  let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
+  const add = (a, b, c, d) => { x0 = Math.min(x0, a); y0 = Math.min(y0, b); x1 = Math.max(x1, c); y1 = Math.max(y1, d); };
+  items().forEach(e => { const r = e.getBoundingClientRect(); add(r.left - w0.left, r.top - w0.top, r.right - w0.left, r.bottom - w0.top); });
+  try { const b = svg.getBBox(); if (b.width) add(b.x, b.y, b.x + b.width, b.y + b.height); } catch (e) {}
+  const d = ctx.getImageData(0, 0, W, H).data;           // çizimlerin kapladığı alan
+  for (let y = 0; y < H; y += 2) for (let x = 0; x < W; x += 2) if (d[(y * W + x) * 4 + 3]) add(x, y, x + 2, y + 2);
+  if (x0 > x1) return { x: 0, y: 0, w: W, h: H };
+  const p = 90; x0 = Math.max(0, x0 - p); y0 = Math.max(0, y0 - p); x1 = Math.min(W, x1 + p); y1 = Math.min(H, y1 + p);
+  return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
+}
 $('#png').onclick = async () => {
   if (!window.html2canvas) return alert('Dışa aktarma kütüphanesi yüklenemedi. İnternet bağlantınızı kontrol edin.');
-  const f = $('#fmt').value, P = { A4: [297, 210], A3: [420, 297], POSTER: [1000, 700] }[f];   // mm, yatay
-  const sc = P ? Math.min(P[0] / 25.4 * 300 / 4000, P[1] / 25.4 * 300 / 3000) : +f.slice(3);
+  const f = $('#fmt').value, n = +$('#split').value, M = 6, P = { A4: [297, 210], A3: [420, 297], POSTER: [1000, 700] }[f];
   select(null); flt = null; legend(); const old = world.style.transform; world.style.transform = 'none';
   try {
-    const c = await html2canvas(world, { scale: sc, backgroundColor: null, useCORS: true });
-    if (!P) { const a = document.createElement('a'); a.download = 'kanit-panosu.png'; a.href = c.toDataURL('image/png'); a.click(); }
-    else {
-      const d = new window.jspdf.jsPDF({ orientation: 'landscape', unit: 'mm', format: P }), w = 4000 * sc / 300 * 25.4, h = 3000 * sc / 300 * 25.4;
-      d.setFillColor(58, 42, 28); d.rect(0, 0, P[0], P[1], 'F');
-      d.addImage(c.toDataURL('image/jpeg', .92), 'JPEG', (P[0] - w) / 2, (P[1] - h) / 2, w, h); d.save(`kanit-panosu-${f}.pdf`);
+    let b = $('#fit').checked ? bounds() : { x: 0, y: 0, w: 4000, h: 3000 }, pw, ph;
+    if (P) {                                              // içeriğe göre yatay/dikey, sayfa oranına genişlet
+      const land = b.w >= b.h; pw = land ? P[0] : P[1]; ph = land ? P[1] : P[0];
+      const A = (pw - 2 * M) / (ph - 2 * M), cx = b.x + b.w / 2, cy = b.y + b.h / 2;
+      if (b.w / b.h < A) b.w = b.h * A; else b.h = b.w / A;
+      b.x = b.w <= 4000 ? Math.min(Math.max(cx - b.w / 2, 0), 4000 - b.w) : cx - b.w / 2;
+      b.y = b.h <= 3000 ? Math.min(Math.max(cy - b.h / 2, 0), 3000 - b.h) : cy - b.h / 2;
     }
-  } catch (e) { alert('Dışa aktarma başarısız oldu. Poster boyutu tarayıcı belleğini aşmış olabilir; A3 veya PNG 2x dene.'); }
+    const sc = P ? Math.min(2, n * (pw - 2 * M) / 25.4 * 300 / b.w) : +f.slice(3);
+    const big = await html2canvas(world, { scale: sc, backgroundColor: null, useCORS: true });
+    const rw = Math.round(b.w * sc), rh = Math.round(b.h * sc), out = document.createElement('canvas');
+    out.width = rw; out.height = rh; const o = out.getContext('2d');
+    o.fillStyle = '#3a2a1c'; o.fillRect(0, 0, rw, rh); o.drawImage(big, -b.x * sc, -b.y * sc, 4000 * sc, 3000 * sc);
+    if (!P) { const a = document.createElement('a'); a.download = 'mantar-pano.png'; a.href = out.toDataURL('image/png'); a.click(); return; }
+    const d = new window.jspdf.jsPDF({ orientation: pw > ph ? 'landscape' : 'portrait', unit: 'mm', format: [pw, ph] }), tw = rw / n, th = rh / n;
+    for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
+      const t = document.createElement('canvas'); t.width = Math.round(tw); t.height = Math.round(th);
+      t.getContext('2d').drawImage(out, -c * tw, -r * th);
+      if (r || c) d.addPage([pw, ph], pw > ph ? 'landscape' : 'portrait');
+      d.addImage(t.toDataURL('image/jpeg', .92), 'JPEG', M, M, pw - 2 * M, ph - 2 * M);
+      if (n > 1) { d.setFontSize(8); d.setTextColor(120); d.text(`Sayfa ${r * n + c + 1}/${n * n}  (satır ${r + 1}, sütun ${c + 1})`, M, M - 2); }
+    }
+    d.save(`mantar-pano-${f}${n > 1 ? '-' + n * n + 'sayfa' : ''}.pdf`);
+  } catch (e) { alert('Dışa aktarma başarısız oldu. Bellek aşılmış olabilir; daha küçük bir boyut dene.'); }
   finally { world.style.transform = old; }
 };
 
 /* ---------- Boyut, sınıf, doku ---------- */
-const CATS = { 'Şüpheli': '#c1121f', 'Mekan': '#1d6fb8', 'Delil': '#2a7f3e', 'Tanık': '#d9730d', 'Zaman': '#7b3fa0', 'Diğer': '#555' };
-const DEF = { pol: 'Şüpheli', note: 'Tanık', news: 'Delil', doc: 'Delil', tick: 'Zaman' };
+const CATS = { 'Önemli': '#c1121f', 'Fikir': '#d9730d', 'Soru': '#1d6fb8', 'Örnek': '#2a7f3e', 'Tarih': '#7b3fa0', 'Diğer': '#555' };
+const DEF = { pol: 'Örnek', note: 'Fikir', news: 'Önemli', doc: 'Önemli', tick: 'Tarih' };
 let flt = null;
 const tf = c => c.style.transform = `rotate(${c.dataset.r || 0}deg) scale(${c.dataset.s || 1})`;
 
 function ensure(c) {
+  if (!c.querySelector('.rt')) { const r = document.createElement('div'); r.className = 'rt'; r.textContent = '↻'; r.title = 'Döndür (Shift: 15° adım)'; c.appendChild(r); }
   if (!c.querySelector('.rz')) { const z = document.createElement('div'); z.className = 'rz'; c.appendChild(z); }
   let t = c.querySelector('.tag');
   if (!t) { t = document.createElement('div'); t.className = 'tag'; c.appendChild(t); }
@@ -245,10 +287,23 @@ function startResize(e, c) {
   const up = () => { removeEventListener('pointermove', mv); removeEventListener('pointerup', up); };
   addEventListener('pointermove', mv); addEventListener('pointerup', up);
 }
+function startRotate(e, c) {
+  e.preventDefault(); select(c);
+  const mv = m => {
+    const q = toWorld(m), px = c.offsetLeft + c.offsetWidth / 2, py = c.offsetTop;
+    let a = Math.atan2(q.x - px, -(q.y - py)) * 180 / Math.PI; if (m.shiftKey) a = Math.round(a / 15) * 15;
+    c.dataset.r = a.toFixed(1); tf(c); syncRot(); drawThreads();
+  };
+  const up = () => { removeEventListener('pointermove', mv); removeEventListener('pointerup', up); };
+  addEventListener('pointermove', mv); addEventListener('pointerup', up);
+}
+function syncRot() { const r = $('#rot'); r.disabled = !sel; r.value = sel ? ((((+sel.dataset.r || 0) + 180) % 360 + 360) % 360) - 180 : 0; }
+$('#rot').oninput = e => { if (sel) { sel.dataset.r = e.target.value; tf(sel); drawThreads(); } };
+$('#rot0').onclick = () => { if (sel) { sel.dataset.r = 0; tf(sel); syncRot(); drawThreads(); save(); } };
 function nudge(ds, dr) {
   if (!sel) return;
   sel.dataset.s = Math.min(3, Math.max(.4, (+sel.dataset.s || 1) + ds)).toFixed(2); sel.dataset.r = (+sel.dataset.r || 0) + dr;
-  tf(sel); drawThreads(); save();
+  tf(sel); syncRot(); drawThreads(); save();
 }
 $('#bigger').onclick = () => nudge(.1, 0); $('#smaller').onclick = () => nudge(-.1, 0);
 addEventListener('keydown', e => {
@@ -256,7 +311,7 @@ addEventListener('keydown', e => {
   ({ '+': () => nudge(.1, 0), '=': () => nudge(.1, 0), '-': () => nudge(-.1, 0), '[': () => nudge(0, -3), ']': () => nudge(0, 3) })[e.key]?.();
 });
 
-function syncCat() { const s = $('#cat'); s.disabled = !sel; if (sel) s.value = CATS[sel.dataset.cat] ? sel.dataset.cat : 'Diğer'; }
+function syncCat() { syncRot(); const s = $('#cat'); s.disabled = !sel; if (sel) s.value = CATS[sel.dataset.cat] ? sel.dataset.cat : 'Diğer'; }
 $('#cat').onchange = e => { if (sel) { sel.dataset.cat = e.target.value; ensure(sel); legend(); save(); } };
 function legend() {
   const n = {}; world.querySelectorAll(':scope > .card').forEach(c => { const k = c.dataset.cat || 'Diğer'; n[k] = (n[k] || 0) + 1; });
@@ -274,3 +329,4 @@ world.addEventListener('input', e => { if (e.target.isContentEditable) e.target.
 
 /* ---------- Başlangıç ---------- */
 try { const d = JSON.parse(localStorage.getItem(KEY)); if (d) restore(d); else throw 0; } catch (e) { addCard('news'); addCard('note'); }
+updateCursor();

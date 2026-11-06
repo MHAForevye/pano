@@ -62,3 +62,10 @@ body[data-m=stamp] #view{cursor:copy}
 #legend button.on{background:var(--ink);color:var(--paper)}
 #legend i{width:12px;height:12px;border-radius:50%;flex:none}
 #legend em{margin-left:auto;padding-left:10px;font-style:normal;opacity:.7}
+
+.rng{display:flex;align-items:center;gap:4px;font-size:13px;white-space:nowrap}
+.rng input[type=range]{width:80px}
+.rt{position:absolute;left:50%;top:-54px;width:24px;height:24px;margin-left:-12px;border-radius:50%;background:#ffd60a;border:2px solid #2b2118;
+  color:#2b2118;font:700 15px/20px Arial,sans-serif;text-align:center;cursor:grab;display:none;z-index:3;user-select:none}
+.rt::after{content:"";position:absolute;left:50%;top:22px;width:2px;height:22px;margin-left:-1px;background:#ffd60a;pointer-events:none}
+.card.sel .rt{display:block}
