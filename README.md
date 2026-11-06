@@ -16,3 +16,9 @@ Mantar pano üzerinde fikir, ders notu, plan ya da eğlence için bağımlılık
   - **Dolu alana sığdır**: boş kenarları keser, sayfayı doldurur
   - **4 sayfaya böl (2×2)** veya 9 sayfa: pano büyük çıkar, sayfaları yan yana yapıştırın
   - PNG'de bölme seçilirse her parça ayrı bir A4 oranlı PNG olarak iner (tarayıcı çoklu indirme izni isteyebilir)
+
+## Mobil ve performans
+- İki parmakla yakınlaştırma/kaydırma, alt sekmeli araç çubuğu, büyük dokunma tutamaçları (✕ ↻ ✥ ve boyut)
+- Dokunmatikte ilk dokunuş kartı seçer, ikinci dokunuş yazıyı düzenler
+- Fotoğraflar eklenirken küçültülür, çizim yalnızca değiştiğinde kaydedilir, ipler kare başına bir kez çizilir
+- ? Yardım penceresi ve moda göre değişen ipucu satırı
