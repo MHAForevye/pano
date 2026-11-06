@@ -187,17 +187,23 @@ Object.assign(T, {
   tick: '<div class="pin"></div><div contenteditable spellcheck="false">Etiket</div>' });
 $('#addDoc').onclick = () => addCard('doc');
 
-function addX(e) { if (!e.querySelector('.sx')) { const x = document.createElement('span'); x.className = 'sx'; x.textContent = '✕'; x.title = 'Sil'; e.appendChild(x); } }
+function fixStamp(e) {
+  if (!e.classList.contains('stamp') || e.querySelector('.st')) return;
+  const t = document.createElement('span'), txt = e.firstChild ? e.firstChild.textContent : '';
+  t.className = 'st'; t.contentEditable = 'true'; t.spellcheck = false; t.textContent = txt;
+  [...e.childNodes].forEach(n => n.nodeType === 3 && n.remove()); e.prepend(t);
+}
+function addX(e) { fixStamp(e); if (!e.querySelector('.sx')) { const x = document.createElement('span'); x.className = 'sx'; x.textContent = '✕'; x.title = 'Sil'; e.appendChild(x); } }
 world.addEventListener('click', e => { if (e.target.classList.contains('sx')) { e.target.parentNode.remove(); save(); } });
 function stampAt(e) {
   const host = e.target.closest('.card') || world, s = document.createElement('div');
-  s.className = 'stamp'; s.textContent = $('#stampType').value;
+  s.className = 'stamp'; s.textContent = $('#stampType').value.trim() || 'ÖNEMLİ';
   let x, y;
   if (host === world) ({ x, y } = toWorld(e));
   else { const r = host.getBoundingClientRect(); x = (e.clientX - r.left) / v.k; y = (e.clientY - r.top) / v.k; }
   s.style.left = x + 'px'; s.style.top = y + 'px'; addX(s); host.appendChild(s); save();
 }
-world.addEventListener('dblclick', e => { const s = e.target.closest('.stamp'); if (s) { s.remove(); save(); } });
+$('#stampType').onfocus = e => e.target.select();
 
 $('#addTl').onclick = () => {
   const p = toWorld({ clientX: innerWidth / 2, clientY: innerHeight * .8 }), x0 = p.x - 500;
@@ -369,7 +375,7 @@ world.addEventListener('input', e => {                       // etiketi doğruda
   const c = e.target.parentNode, k = e.target.textContent.trim() || 'Diğer'; c.dataset.cat = k;
   if (!c.dataset.cc) e.target.style.background = CATS[k] || '#555'; $('#cat').value = k; legend();
 });
-world.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.classList.contains('tag')) { e.preventDefault(); e.target.blur(); } });
+world.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.target.classList.contains('tag') || e.target.classList.contains('st'))) { e.preventDefault(); e.target.blur(); } });
 function legend() {
   const cards = [...world.querySelectorAll(':scope > .card')], n = {}, col = {}, L = $('#legend');
   cards.forEach(c => { const k = c.dataset.cat || 'Diğer'; n[k] = (n[k] || 0) + 1; col[k] = col[k] || c.dataset.cc || CATS[k] || '#555'; });

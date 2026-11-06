@@ -20,7 +20,7 @@
     <button data-m="marker" title="Kalın işaretleyici (M)">🖍️ İşaretleyici</button>
     <button data-m="eraser" title="Silgi (E)">🧽 Silgi</button>
     <button data-m="stamp" title="Mühür (S): karta veya panoya tıkla">Mühür</button>
-    <select id="stampType"><option>ÖNEMLİ</option><option>TEKRAR ET</option><option>SINAV</option><option>DOĞRU ✔</option><option>YANLIŞ ✘</option><option>GİZLİ</option><option>ŞÜPHELİ</option></select>
+    <input id="stampType" list="stamps" value="ÖNEMLİ" size="11" title="Mühür yazısı: istediğini yaz ya da listeden seç"><datalist id="stamps"><option value="ÖNEMLİ"><option value="TEKRAR ET"><option value="SINAV"><option value="DOĞRU ✔"><option value="YANLIŞ ✘"><option value="GİZLİ"><option value="ŞÜPHELİ"></datalist>
   </div>
   <input type="color" id="color" value="#c1121f" title="İp ve kalem rengi">
   <label class="rng" title="Kalem kalınlığı">Kalınlık <input type="range" id="size" min="1" max="12" value="3"></label>
@@ -51,7 +51,7 @@
 </div>
 <div id="legend"></div>
 <div id="lens" hidden><div id="lw"></div></div>
-<p id="hint">Tekerlek: yakınlaştır · Boş alanı sürükle: gezin · Kartı seç: sarı nokta boyut, üstteki ↻ noktası serbest açı (Shift: 15° adım) · İpe tıkla: etiket, Shift+tık: sil · Çift tıkla: mührü sil · Etiketin üstüne tıklayıp yazarak adını değiştirebilirsin · Pano otomatik kaydedilir</p>
+<p id="hint">Tekerlek: yakınlaştır · Boş alanı sürükle: gezin · Kartı seç: sarı nokta boyut, üstteki ↻ noktası serbest açı (Shift: 15° adım) · İpe tıkla: etiket, Shift+tık: sil · Mührün yazısına tıklayıp istediğini yaz · Etiketin üstüne tıklayıp yazarak adını değiştirebilirsin · Pano otomatik kaydedilir</p>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>

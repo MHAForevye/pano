@@ -87,3 +87,6 @@ body[data-m=stamp] #view{cursor:copy}
 .ted{position:absolute;z-index:6;transform:translate(-50%,-50%);display:flex;gap:4px}
 .ted input{width:210px;padding:6px 10px;font:18px "Segoe Print","Bradley Hand","Comic Sans MS",cursive;color:#1d3557;background:#fffbe6;border:2px solid #c9b458;box-shadow:2px 4px 8px rgba(0,0,0,.4)}
 .ted button{border:2px solid #2b2118;background:#fff;cursor:pointer;font-size:16px}
+
+.stamp .st{display:inline-block;min-width:24px;outline:none;cursor:text;user-select:text}
+#stampType{font:inherit;font-size:14px;padding:6px 8px;border:1.5px solid var(--ink);background:#fff;border-radius:2px}
