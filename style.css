@@ -27,7 +27,8 @@ body[data-m=thread] .card{cursor:pointer}
 .news{width:300px;padding:22px 16px 16px;background:#e3d8b8;filter:sepia(.25);font-family:Georgia,"Times New Roman",serif;
   background-image:linear-gradient(90deg,rgba(0,0,0,.06),transparent 10%,transparent 90%,rgba(0,0,0,.08))}
 .news h3{margin:0 0 8px;padding-bottom:6px;border-bottom:3px double var(--ink);font:900 24px/1.05 Georgia,serif}
-.news p{margin:0;font-size:13px;line-height:1.35;text-align:justify;column-count:2;column-gap:12px}
+.news p{margin:0;font-size:13px;line-height:1.35;text-align:left}
+.news p{min-height:40px}
 #bar{position:fixed;left:50%;top:12px;transform:translateX(-50%);z-index:10;display:flex;gap:14px;align-items:center;
   padding:8px 14px;background:var(--paper);border:2px solid var(--ink);border-radius:4px;box-shadow:4px 6px 0 rgba(0,0,0,.35);max-width:96vw;overflow-x:auto}
 .grp{display:flex;gap:4px}
@@ -69,3 +70,20 @@ body[data-m=stamp] #view{cursor:copy}
   color:#2b2118;font:700 15px/20px Arial,sans-serif;text-align:center;cursor:grab;display:none;z-index:3;user-select:none}
 .rt::after{content:"";position:absolute;left:50%;top:22px;width:2px;height:22px;margin-left:-1px;background:#ffd60a;pointer-events:none}
 .card.sel .rt{display:block}
+
+.tag{white-space:nowrap}
+.card.sel .tag{pointer-events:auto;user-select:text;cursor:text;outline:2px solid #ffd60a}
+#catColor{width:34px;height:30px;padding:0;border:1.5px solid var(--ink);background:none;cursor:pointer}
+#cat{font:inherit;font-size:14px;padding:6px 8px;border:1.5px solid var(--ink);background:#fff}
+
+.xdel{position:absolute;right:-14px;top:-14px;width:26px;height:26px;border-radius:50%;background:#c1121f;color:#fff;border:2px solid #fff;
+  font:700 14px/22px Arial,sans-serif;text-align:center;cursor:pointer;display:none;z-index:4;box-shadow:1px 3px 4px rgba(0,0,0,.4);user-select:none}
+.card.sel .xdel,.card:hover .xdel{display:block}
+.stamp .sx,.tl .sx{position:absolute;right:-12px;top:-14px;width:22px;height:22px;border-radius:50%;background:#c1121f;color:#fff;border:2px solid #fff;
+  font:700 12px/18px Arial,sans-serif;text-align:center;cursor:pointer;display:none}
+.stamp:hover .sx,.tl:hover .sx{display:block}
+.lbl{pointer-events:all;cursor:grab;filter:drop-shadow(1px 3px 2px rgba(0,0,0,.4))}
+.lbl .lx{opacity:0;cursor:pointer}.lbl:hover .lx{opacity:1}
+.ted{position:absolute;z-index:6;transform:translate(-50%,-50%);display:flex;gap:4px}
+.ted input{width:210px;padding:6px 10px;font:18px "Segoe Print","Bradley Hand","Comic Sans MS",cursive;color:#1d3557;background:#fffbe6;border:2px solid #c9b458;box-shadow:2px 4px 8px rgba(0,0,0,.4)}
+.ted button{border:2px solid #2b2118;background:#fff;cursor:pointer;font-size:16px}

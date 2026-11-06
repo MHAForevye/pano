@@ -33,9 +33,10 @@
     <input type="file" id="file" accept="image/*" hidden>
   </div>
   <div class="grp">
-    <select id="cat" title="Seçili kartın sınıfı" disabled><option>Önemli</option><option>Fikir</option><option>Soru</option><option>Örnek</option><option>Tarih</option><option>Diğer</option></select>
+    <input id="cat" list="cats" placeholder="Etiket yaz…" size="11" title="Seçili kartın etiketi: istediğini yaz" disabled><datalist id="cats"><option value="Önemli"><option value="Fikir"><option value="Soru"><option value="Örnek"><option value="Tarih"><option value="Diğer"></datalist><input type="color" id="catColor" title="Etiket rengi" disabled>
     <button id="smaller" title="Küçült (-)">−</button><button id="bigger" title="Büyüt (+)">+</button>
     <label class="rng" title="Seçili kartın açısı (serbest)">Açı <input type="range" id="rot" min="-180" max="180" value="0" disabled></label><button id="rot0" title="Açıyı sıfırla">↺</button>
+    <label class="rng" title="Seçili fotoğrafın parlaklığı">Parlaklık <input type="range" id="bright" min="30" max="200" value="100" disabled></label>
     <button id="lensBtn">Büyüteç</button>
     <button id="del">Seçileni sil</button>
     <button id="clear">Çizimi sil</button>
@@ -50,7 +51,7 @@
 </div>
 <div id="legend"></div>
 <div id="lens" hidden><div id="lw"></div></div>
-<p id="hint">Tekerlek: yakınlaştır · Boş alanı sürükle: gezin · Kartı seç: sarı nokta boyut, üstteki ↻ noktası serbest açı (Shift: 15° adım) · İpe tıkla: etiket, Shift+tık: sil · Çift tıkla: mührü sil · Pano otomatik kaydedilir</p>
+<p id="hint">Tekerlek: yakınlaştır · Boş alanı sürükle: gezin · Kartı seç: sarı nokta boyut, üstteki ↻ noktası serbest açı (Shift: 15° adım) · İpe tıkla: etiket, Shift+tık: sil · Çift tıkla: mührü sil · Etiketin üstüne tıklayıp yazarak adını değiştirebilirsin · Pano otomatik kaydedilir</p>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
