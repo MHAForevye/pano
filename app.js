@@ -59,7 +59,7 @@ view.addEventListener('pointerdown', e => {
 /* ---------- Kartlar ---------- */
 function addCard(type, img, pos) {
   const c = document.createElement('div');
-  c.className = 'card ' + ({ pol: 'polaroid', note: 'note', news: 'news', doc: 'doc', tick: 'tick' })[type];
+  c.className = 'card ' + ({ pol: 'polaroid', note: 'note', news: 'news', news2: 'news news2', postit: 'postit', doc: 'doc', tick: 'tick' })[type];
   c.innerHTML = T[type]; c.dataset.cat = DEF[type]; ensure(c);
   if (img) c.querySelector('img').src = img;
   const p = toWorld({ clientX: innerWidth / 2, clientY: innerHeight / 2 });
@@ -86,11 +86,37 @@ world.addEventListener('pointerdown', e => {
   if (e.target.isContentEditable && (e.pointerType !== 'touch' || was)) return;   // dokunmatikte ilk dokunuş seçer, ikincisi yazdırır
   startDrag(e, c);
 });
+/* Post-it yapıştırma: kartın üstüne bırakılan post-it karta çocuk olur, kartla birlikte taşınır/döner/büyür */
+const mat = (c, l, t) => { const w = c.offsetWidth; return new DOMMatrix().translate(l + w / 2, t).rotate(+c.dataset.r || 0).scale(+c.dataset.s || 1).translate(-w / 2, 0); };
+const wm = c => { const m = mat(c, parseFloat(c.style.left) || 0, parseFloat(c.style.top) || 0); return c.parentNode === world ? m : wm(c.parentNode).multiply(m); };
+function reparent(c, np) {
+  const Mp = wm(c), M = np === world ? Mp : wm(np).inverse().multiply(Mp), w = c.offsetWidth;
+  c.style.left = (M.e - w / 2 + M.a * w / 2) + 'px'; c.style.top = (M.f + M.b * w / 2) + 'px';
+  c.dataset.r = (Math.atan2(M.b, M.a) * 180 / Math.PI).toFixed(1); c.dataset.s = Math.hypot(M.a, M.b).toFixed(3); tf(c); np.appendChild(c);
+}
+const lift = c => { if (c.parentNode !== world) reparent(c, world); };
+function hostUnder(c) {
+  if (!c.classList.contains('postit')) return null;
+  const r = c.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+  return document.elementsFromPoint(x, y).map(n => n.closest && n.closest('.card')).find(h => h && h !== c && !c.contains(h) && !h.classList.contains('postit') && h.parentNode === world) || null;
+}
+function stick(c) {
+  const h = c.parentNode === world && hostUnder(c); if (!h) return;
+  const n = threads.length; threads = threads.filter(t => t.a !== c && t.b !== c);
+  reparent(c, h); if (n !== threads.length) toast('Post-it yapıştı; ona bağlı ip kaldırıldı.'); drawThreads(); dirty = true; syncRot();
+}
 function startDrag(e, c) {
   if (e.pointerType === 'touch') e.preventDefault();
-  const p = toWorld(e), ox = p.x - c.offsetLeft, oy = p.y - c.offsetTop;
-  const mv = m => { if (pts.size > 1) return; const q = toWorld(m); c.style.left = q.x - ox + 'px'; c.style.top = q.y - oy + 'px'; dirty = true; drawThreads(); };
-  const up = () => { removeEventListener('pointermove', mv); removeEventListener('pointerup', up); };
+  let started = false, ox, oy, hl = null;
+  const begin = () => { lift(c); const p = toWorld(e); ox = p.x - c.offsetLeft; oy = p.y - c.offsetTop; started = true; };
+  if (c.parentNode === world) begin();
+  const mv = m => {
+    if (pts.size > 1) return;
+    if (!started) { if (Math.hypot(m.clientX - e.clientX, m.clientY - e.clientY) < 4) return; begin(); }
+    const q = toWorld(m); c.style.left = q.x - ox + 'px'; c.style.top = q.y - oy + 'px'; dirty = true; drawThreads();
+    const h = hostUnder(c); if (h !== hl) { hl && hl.classList.remove('stick-target'); hl = h; hl && hl.classList.add('stick-target'); }
+  };
+  const up = () => { removeEventListener('pointermove', mv); removeEventListener('pointerup', up); hl && hl.classList.remove('stick-target'); if (started) stick(c); };
   addEventListener('pointermove', mv); addEventListener('pointerup', up);
 }
 
@@ -101,6 +127,7 @@ function removeCard(c) {
 
 /* ---------- İpler ---------- */
 function threadClick(c) {
+  if (c.parentNode !== world) return toast('Yapışık post-it\'e ip bağlanmaz. Önce kartından çek.');
   if (!from) { from = c; c.classList.add('from'); return; }
   if (from !== c) threads.push({ a: from, b: c, color: $('#color').value });
   from.classList.remove('from'); from = null; drawThreads();
@@ -213,6 +240,8 @@ updateCursor();
 $('#modes').addEventListener('click', e => e.target.dataset.m && setMode(e.target.dataset.m));
 $('#addNote').onclick = () => addCard('note');
 $('#addNews').onclick = () => addCard('news');
+$('#addNews2').onclick = () => addCard('news2');
+$('#addPostit').onclick = () => addCard('postit');
 $('#addPolaroid').onclick = () => $('#file').click();
 $('#file').onchange = e => {                       // büyük fotoğrafı küçültüp ekle: hız ve kayıt için
   const f = e.target.files[0]; if (!f) return; const u = URL.createObjectURL(f), im = new Image();
@@ -235,6 +264,8 @@ addEventListener('keydown', e => {
 
 /* ---------- Mühür, belge, zaman çizelgesi ---------- */
 Object.assign(T, {
+  news2: '<div class="pin"></div><h3 contenteditable spellcheck="false">MANŞET BURADA</h3><div class="cols"><p contenteditable spellcheck="false">Sol kolon: buraya yazdıkça aşağı doğru uzar.</p><p contenteditable spellcheck="false">Sağ kolon: kendi başına yazılır, soldakinden bağımsızdır.</p></div>',
+  postit: '<div class="pin"></div><div contenteditable spellcheck="false">Hatırlatma</div>',
   doc: '<div class="pin"></div><div contenteditable spellcheck="false"><b>DERS NOTU</b><br>Konu: ...<br>• Madde 1<br>• Madde 2<br>• Madde 3</div>',
   tick: '<div class="pin"></div><div contenteditable spellcheck="false">Etiket</div>' });
 $('#addDoc').onclick = () => addCard('doc');
@@ -287,14 +318,14 @@ addEventListener('pointermove', e => {
 const KEY = 'mantar-pano-v2', items = () => [...world.querySelectorAll(':scope > .card, :scope > .stamp, :scope > .tl')];
 function snapshot() {
   const els = items();
-  return { html: els.map(e => { const c = e.cloneNode(true); c.classList.remove('sel', 'from', 'dim'); return c.outerHTML; }),
+  return { html: els.map(e => { const c = e.cloneNode(true); c.classList.remove('sel', 'from', 'dim'); c.querySelectorAll('.sel,.from,.dim,.stick-target').forEach(n => n.classList.remove('sel', 'from', 'dim', 'stick-target')); c.classList.remove('stick-target'); return c.outerHTML; }),
     threads: threads.map(t => ({ a: els.indexOf(t.a), b: els.indexOf(t.b), color: t.color, label: t.label || '', p: t.p })), draw: drawData() };
 }
 function drawData() { if (drawDirty) { drawURL = cv.toDataURL(); drawDirty = false; } return drawURL; }
 function restore(d) {
   items().forEach(e => e.remove());
   const h = document.createElement('div'); h.innerHTML = d.html.join(''); const els = [...h.children];
-  els.forEach(e => { world.appendChild(e); if (e.matches('.stamp,.tl')) addX(e); e.querySelectorAll('.stamp').forEach(addX); if (e.classList.contains('card')) ensure(e); });
+  els.forEach(e => { world.appendChild(e); if (e.matches('.stamp,.tl')) addX(e); e.querySelectorAll('.stamp').forEach(addX); if (e.classList.contains('card')) ensure(e); e.querySelectorAll('.card').forEach(ensure); });
   threads = d.threads.filter(t => els[t.a] && els[t.b]).map(t => ({ a: els[t.a], b: els[t.b], color: t.color, label: t.label, p: t.p }));
   ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1; ctx.clearRect(0, 0, 4000, 3000);
   drawURL = d.draw || null; drawDirty = false;
@@ -315,7 +346,7 @@ function bounds(fast) {
   const W = 4000, H = 3000, w0 = world.getBoundingClientRect(), K = fast ? v.k : 1;
   let x0 = 1e9, y0 = 1e9, x1 = -1e9, y1 = -1e9;
   const add = (a, b, c, d) => { x0 = Math.min(x0, a); y0 = Math.min(y0, b); x1 = Math.max(x1, c); y1 = Math.max(y1, d); };
-  items().forEach(e => { const r = e.getBoundingClientRect(); add((r.left - w0.left) / K, (r.top - w0.top) / K, (r.right - w0.left) / K, (r.bottom - w0.top) / K); });
+  [...items(), ...world.querySelectorAll('.card .card')].forEach(e => { const r = e.getBoundingClientRect(); add((r.left - w0.left) / K, (r.top - w0.top) / K, (r.right - w0.left) / K, (r.bottom - w0.top) / K); });
   try { const b = svg.getBBox(); if (b.width) add(b.x, b.y, b.x + b.width, b.y + b.height); } catch (e) {}
   if (!fast) {                                           // çizimlerin kapladığı alan
     const d = ctx.getImageData(0, 0, W, H).data;
@@ -376,7 +407,7 @@ $('#png').onclick = async () => {
 
 /* ---------- Boyut, sınıf, doku ---------- */
 const CATS = { 'Önemli': '#c1121f', 'Fikir': '#d9730d', 'Soru': '#1d6fb8', 'Örnek': '#2a7f3e', 'Tarih': '#7b3fa0', 'Diğer': '#555' };
-const DEF = { pol: 'Örnek', note: 'Fikir', news: 'Önemli', doc: 'Önemli', tick: 'Tarih' };
+const DEF = { pol: 'Örnek', note: 'Fikir', news: 'Önemli', news2: 'Önemli', postit: 'Fikir', doc: 'Önemli', tick: 'Tarih' };
 let flt = null;
 const tf = c => c.style.transform = `rotate(${c.dataset.r || 0}deg) scale(${c.dataset.s || 1})`;
 
@@ -391,19 +422,19 @@ function ensure(c) {
   t.contentEditable = 'true'; t.spellcheck = false; t.textContent = k; t.style.background = c.dataset.cc || CATS[k] || '#555';
 }
 function startResize(e, c) {
-  e.preventDefault(); const x0 = e.clientX, s0 = +c.dataset.s || 1, w = c.offsetWidth;
+  e.preventDefault(); lift(c); const x0 = e.clientX, s0 = +c.dataset.s || 1, w = c.offsetWidth;
   const mv = m => { c.dataset.s = Math.min(3, Math.max(.4, s0 + (m.clientX - x0) / v.k / w)).toFixed(2); tf(c); dirty = true; drawThreads(); };
-  const up = () => { removeEventListener('pointermove', mv); removeEventListener('pointerup', up); };
+  const up = () => { removeEventListener('pointermove', mv); removeEventListener('pointerup', up); stick(c); };
   addEventListener('pointermove', mv); addEventListener('pointerup', up);
 }
 function startRotate(e, c) {
-  e.preventDefault(); select(c);
+  e.preventDefault(); select(c); lift(c);
   const mv = m => {
     const q = toWorld(m), px = c.offsetLeft + c.offsetWidth / 2, py = c.offsetTop;
     let a = Math.atan2(q.x - px, -(q.y - py)) * 180 / Math.PI; if (m.shiftKey) a = Math.round(a / 15) * 15;
     c.dataset.r = a.toFixed(1); tf(c); syncRot(); dirty = true; drawThreads();
   };
-  const up = () => { removeEventListener('pointermove', mv); removeEventListener('pointerup', up); };
+  const up = () => { removeEventListener('pointermove', mv); removeEventListener('pointerup', up); stick(c); };
   addEventListener('pointermove', mv); addEventListener('pointerup', up);
 }
 function syncRot() { const r = $('#rot'); r.disabled = !sel; r.value = sel ? ((((+sel.dataset.r || 0) + 180) % 360 + 360) % 360) - 180 : 0; }
@@ -436,7 +467,7 @@ world.addEventListener('input', e => {                       // etiketi doğruda
 });
 world.addEventListener('keydown', e => { if (e.key === 'Enter' && (e.target.classList.contains('tag') || e.target.classList.contains('st'))) { e.preventDefault(); e.target.blur(); } });
 function legend() {
-  const cards = [...world.querySelectorAll(':scope > .card')], n = {}, col = {}, L = $('#legend');
+  const cards = [...world.querySelectorAll('.card')], n = {}, col = {}, L = $('#legend');
   cards.forEach(c => { const k = c.dataset.cat || 'Diğer'; n[k] = (n[k] || 0) + 1; col[k] = col[k] || c.dataset.cc || CATS[k] || '#555'; });
   L.textContent = '';
   [...new Set([...Object.keys(CATS), ...Object.keys(n)])].forEach(k => {

@@ -125,3 +125,16 @@ body[data-m=stamp] #view{cursor:copy}
 }
 #hint{background:rgba(43,33,24,.82);padding:5px 10px;border-radius:6px}
 #hint:empty{display:none}
+
+.news2{width:430px}
+.news2 .cols{display:grid;grid-template-columns:1fr 1fr;gap:0 14px;align-items:start}
+.news2 .cols p{min-height:60px}
+.news2 .cols p+p{border-left:1px solid rgba(43,33,24,.35);padding-left:14px}
+.postit{width:130px;min-height:130px;padding:30px 12px 12px;z-index:2;color:#3b3300;
+  background:linear-gradient(180deg,#fff58a 0,#ffec4d 100%);font:18px/1.25 "Segoe Print","Bradley Hand","Comic Sans MS",cursive;
+  box-shadow:1px 10px 12px -7px rgba(0,0,0,.5),0 2px 3px rgba(0,0,0,.2)}
+.postit::before{content:"";position:absolute;left:0;right:0;top:0;height:22px;background:rgba(0,0,0,.08);cursor:move}
+.postit .pin,.postit .tag{display:none}
+.postit::after{opacity:.18}
+
+.card.stick-target{outline:3px dashed #2a7f3e;outline-offset:6px}
