@@ -143,12 +143,8 @@ body[data-m=stamp] #view{cursor:copy}
 .search-hide{display:none!important}
 #view.drop-ready{outline:5px dashed #ffd60a;outline-offset:-12px}
 #hint.hint-muted{opacity:.18;transition:opacity .5s}
-@media(max-width:760px){#legend.show{z-index:25;bottom:calc(var(--mobile-bar, 150px) + env(safe-area-inset-bottom));max-height:45vh;overflow:auto}}
-
-/* Erişilebilirlik, arama, sürükle-bırak ve hizalama */
-.search-hide{display:none!important}
-#view.drop-ready{outline:5px dashed #ffd60a;outline-offset:-12px}
-#hint.hint-muted{opacity:.18;transition:opacity .5s}
-@media(max-width:760px){#legend.show{z-index:25;bottom:calc(var(--mobile-bar, 150px) + env(safe-area-inset-bottom));max-height:45vh;overflow:auto}}
+@media(max-width:760px){#legend.show{z-index:25;bottom:var(--mobile-bar,150px);max-height:45vh;overflow:auto}}
 
 .threaded .pin::after{content:"";position:absolute;inset:-3px;border:2px solid var(--thread-color,#fff4d0);border-left-color:transparent;border-radius:50%;transform:rotate(-28deg);opacity:.95;pointer-events:none}
+
+#searchCount{font-size:12px;align-self:center;min-width:3.5em}

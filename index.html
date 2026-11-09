@@ -67,7 +67,7 @@
 
   <div class="pane" data-tab="file">
     <div class="grp">
-      <input id="search" type="search" placeholder="Kartlarda ara (Ctrl+F)" aria-label="Kartlarda ara"><button id="exportSelected" title="Seçili kartı PNG olarak indir">Seçili kartı indir</button><button id="clear">Çizimi sil</button>
+      <input id="search" type="search" placeholder="Kartlarda ara (Ctrl+F)" aria-label="Kartlarda ara"><small id="searchCount" aria-live="polite"></small><button id="exportSelected" title="Seçili kartı PNG olarak indir">Seçili kartı indir</button><button id="clear">Çizimi sil</button>
       <button id="saveJson" title="Panonu dosya olarak yedekle">Kaydet</button><button id="openJson" title="Yedek dosyasını aç">Aç</button><input type="file" id="jsonFile" accept=".json" hidden>
     </div>
     <div class="grp">
@@ -103,8 +103,8 @@
     <p><b>＋ Ekle</b> sekmesinden fotoğraf, kupür (1 ya da 2 kolonlu), not, küçük sarı post-it, kâğıt ya da zaman çizelgesi ekle. Post-it kartın üstüne bırakılınca <b>yapışır</b> ve kartla birlikte taşınır, döner, büyür; üstteki koyu şeritten ya da ✥ tutamacından tutup çekersen kopar. Yazıya dokunup değiştir. Kartı seçince köşelerde tutamaçlar çıkar: <b>✕</b> sil · <b>sarı nokta</b> boyut · <b>↻</b> serbest açı · <b>✥</b> taşı. <b>Kart</b> sekmesinde etiket, açı ve fotoğraf parlaklığı var.</p>
     <h3>İp, çizim, mühür</h3>
     <p><b>İp</b> modunda sırayla iki karta dokun; ipe dokunup etiket yaz, etiketi sürükleyerek kaydır. <b>Kalem / İşaretleyici / Silgi</b> ile pano üzerine çiz. <b>Mühür</b> modunda kutuya yazdığın yazıyı karta ya da panoya bas.</p>
-    <h3>Kısayollar ve ekleme</h3><p><b>Ctrl+Z / Ctrl+Y:</b> geri al / yinele · <b>Ctrl+D:</b> çoğalt · <b>Ctrl+F:</b> ara · <b>Oklar:</b> kartı 1 px, Shift+ok 10 px taşı. Kartları hizalamak için 8 px yakınlıkta otomatik yakalama olur; Alt basılıyken kapatılır. Dosyaları doğrudan panoya sürükleyip bırakabilirsin. Seçili kartı ayrı PNG indirebilirsin.</p><h3>Kısayollar ve ekleme</h3><p><b>Ctrl+Z / Ctrl+Y:</b> geri al / yinele · <b>Ctrl+D:</b> çoğalt · <b>Ctrl+F:</b> ara · <b>Oklar:</b> kartı 1 px, Shift+ok 10 px taşı. Kartları hizalamak için 8 px yakınlıkta otomatik yakalama olur; Alt basılıyken kapatılır. Dosyaları doğrudan panoya sürükleyip bırakabilirsin. Seçili kartı ayrı PNG indirebilirsin.</p><h3>Kaydetme</h3>
-    <p>Pano bu tarayıcıda otomatik kaydedilir. Başka cihaza taşımak ya da yedek için <b>Dosya → Kaydet</b> ile dosya indir, <b>Aç</b> ile geri yükle.</p>
+    <h3>Kısayollar ve ekleme</h3><p><b>Ctrl+Z / Ctrl+Y:</b> geri al / yinele · <b>Ctrl+D:</b> çoğalt · <b>Ctrl+F:</b> ara · <b>Oklar:</b> kartı 1 px, Shift+ok 10 px taşı. Kartları hizalamak için 8 px yakınlıkta otomatik yakalama olur; Alt basılıyken kapatılır. Dosyaları doğrudan panoya sürükleyip bırakabilirsin. Seçili kartı ayrı PNG indirebilirsin.</p><h3>Kaydetme</h3>
+    <p>Pano bu tarayıcıda otomatik kaydedilir. Başka cihaza taşımak ya da yedek için <b>Kaydet</b> düğmesiyle (Dosya paneli) dosya indir, <b>Aç</b> ile geri yükle.</p>
     <h3>Çıktı alma</h3>
     <p><b>Resim (PNG):</b> paylaşmak için. Kalite arttıkça resim daha net ama dosya daha büyük olur (çözünürlük piksel yani resmi oluşturan nokta sayısıdır; 1 piksel ekrandaki tek bir noktadır).<br><b>Yazıcı (PDF):</b> kâğıda basmak için. <b>4 ya da 9 parçaya böl</b> dersen pano büyük çıkar: her parçayı ayrı A4'e bas, kenarlarını hizalayıp yan yana yapıştır.</p>
     <button data-close="1" class="main">Anladım</button>
@@ -112,7 +112,6 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script type="module" src="app.js"></script>
