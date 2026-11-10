@@ -13,6 +13,15 @@ Yayından önce: çalışan sürümün etiketini/kopyasını al (`git tag` ya da
 - [ ] İki kart arasına ip bağla, kalemle çiz, post-it'i kartın üstüne yapıştır → yenile → hepsi yerinde.
 - [ ] Kart sil (onay çıkıyor) → Ctrl+Z geri getiriyor.
 
+## Araç çubuğu (arayüze dokunduysan)
+- [ ] Masaüstünde açılışta paneller kapalı; yalnızca Çiz · Ekle · Dosya (ve etkin araç adı) görünüyor.
+- [ ] Sekmeye basınca açılıyor; aynı sekmeye tekrar basınca, panonun boş yerine tıklayınca veya `Escape` ile kapanıyor.
+- [ ] Kart seçince **Kart** sekmesi beliriyor; seçim kalkınca veya kart silinince kayboluyor.
+- [ ] Panel kapalıyken kısayollar çalışıyor: V, T, P, M, E, S, Ctrl+Z/Y, Ctrl+D, oklar, Delete.
+- [ ] `Ctrl+F` Dosya panelini açıp aramaya odaklanıyor (ikinci basışta kapanmıyor).
+- [ ] Dosya panelinde durum yazısı: Kaydediliyor… → Kaydedildi. IndexedDB engelliyken "Yedek alana kaydedildi", ikisi de başarısızsa "Kayıt başarısız" (kırmızı); Dosya sekmesinde nokta çıkıyor.
+- [ ] Telefonda (≤760 px) alt çubukta her zaman bir sekme açık; aktif sekmeye basmak kapatmıyor.
+
 ## Veri kaybı senaryoları (kayıt/yedek koduna dokunduysan mutlaka)
 - [ ] **Kaydet → Aç:** yedeği indir, birkaç kart sil, yedeği aç → kartlar, ipler ve çizim geri geldi.
 - [ ] **Bozuk dosya:** boş bir `.json`, rastgele metin içeren `.json` ve `{"html":[],"threads":[null]}` aç → "Geçersiz proje dosyası" uyarısı çıkıyor **ve mevcut pano yerinde duruyor**.

@@ -19,7 +19,7 @@ Tek sayfalı, tarayıcıda çalışan görsel pano. Derleme adımı yoktur; proj
 - Seçili kartı PNG indirme; pano PNG, A4/A3/poster PDF; çok parçalı PNG tek ZIP içinde.
 - IndexedDB otomatik kayıt; eski localStorage panolarını açılışta içe aktarma; JSON yedek/aç.
 - JSON içe aktarmada script, inline event handler ve tehlikeli URL temizliği.
-- Mobil yakınlaştırma erişilebilir; alt sekmeli araç çubuğu.
+- Mobil yakınlaştırma erişilebilir; alt sekmeli araç çubuğu. Masaüstünde de sekmeli, açılır-kapanır araç çubuğu: Çiz · Ekle · Kart (yalnızca kart seçiliyken) · Dosya; aynı sekmeye basarak, dışarı tıklayarak veya Escape ile kapanır. Dosya bölümünde otomatik kayıt durumu görünür.
 
 ## Veri ve güvenlik
 
