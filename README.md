@@ -30,3 +30,16 @@ Pano verisi tarayıcının IndexedDB alanında tutulur. Tarayıcı verilerini te
 Kod `app.js` (arayüz/olay akışı), `config.js` (ayarlar), `geometry.js` (kart/raptiye geometrisi) ve `persist.js` (IndexedDB) olarak ayrılmıştır. Büyüteç klonu yalnızca pano değiştikten sonra ihtiyaç olduğunda yenilenir. Dolu alan sınırları çizim katmanının 400×300 örneklemesiyle hesaplanır; 48 MB tam çözünürlüklü ImageData tahsisi yapılmaz.
 
 Dışa aktarma kitaplıkları bu pakette yerel olarak bulunmaz; CDN kaynakları `index.html` içindedir. Bu nedenle tam çevrimdışı PDF/PNG dışa aktarma için bu kütüphaneleri `vendor/` klasörüne indirip script yollarını yerelleştirmek gerekir.
+
+## Test ve değişiklik disiplini
+
+Uygulama derleme gerektirmez; `package.json` yalnızca testler içindir:
+
+```
+npm install
+npm test
+```
+
+Testler `geometry.js` (raptiye/ip hesabı), `persist.js` (kayıt, "daha yeni olan kazanır", IndexedDB hataları) ve `app.js` içindeki `restore()` (bozuk yedekte mevcut panonun korunması, içe aktarma temizliği) için yazılmıştır. Elle kontrol için `KONTROL-LISTESI.md` dosyasına bakın.
+
+Geçersiz bir JSON yedeği açıldığında mevcut pano silinmez; açılışta kayıtlı pano okunamazsa bozuk kopya `mantar-pano-v2-hatali-…` anahtarıyla IndexedDB'de ayrıca saklanır.

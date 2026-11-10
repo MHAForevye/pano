@@ -360,23 +360,24 @@ function snapshot() {
 }
 function drawData() { if (drawDirty) { drawURL = cv.toDataURL(); drawDirty = false; } return drawURL; }
 function restore(d) {
-  if(!d || !Array.isArray(d.html) || !Array.isArray(d.threads)) throw new Error('Geçersiz pano verisi');
+  if(!d || !Array.isArray(d.html) || !Array.isArray(d.threads) || !d.html.every(x => typeof x === 'string')) throw new Error('Geçersiz pano verisi');
   const rid = ++restoreId;
-  items().forEach(e => e.remove());
   const h = document.createElement('div');
   const parsed = new DOMParser().parseFromString('<section>'+d.html.join('')+'</section>', 'text/html');
   parsed.querySelectorAll('script,iframe,object,embed,link,meta,base,form').forEach(n=>n.remove());
   parsed.querySelectorAll('[data-d]').forEach(n=>n.removeAttribute('data-d'));
   parsed.querySelectorAll('*').forEach(n=>{ [...n.attributes].forEach(a=>{ const k=a.name.toLowerCase(), val=a.value.trim().toLowerCase(); if(k.startsWith('on') || (['href','src','xlink:href','formaction'].includes(k) && /^(javascript:|data:(?!image\/(png|jpeg|gif|webp);))/i.test(val))) n.removeAttribute(a.name); }); });
   [...parsed.body.firstElementChild.children].forEach(n=>h.appendChild(document.importNode(n,true))); const els = [...h.children];
+  // Yeni veri burada tamamen hazır ve doğrulanmış olmalı; hata olursa mevcut pano yerinde kalır.
+  threads = d.threads.filter(t => t && typeof t === 'object' && Number.isInteger(t.a)&&Number.isInteger(t.b)&&els[t.a]?.classList.contains('card')&&els[t.b]?.classList.contains('card')).map(t => ({ a: els[t.a], b: els[t.b], color: /^#[0-9a-f]{3,8}$/i.test(t.color||'')?t.color:'#c1121f', label: String(t.label||'').slice(0,40), p: Number.isFinite(+t.p)?Math.max(0,Math.min(1,+t.p)):.5 }));
+  items().forEach(e => e.remove());   // geri dönüşü olmayan adım: her şey yukarıda doğrulandı
   els.forEach(e => { world.appendChild(e); if (e.matches('.stamp,.tl')) addX(e); e.querySelectorAll('.stamp').forEach(addX); if (e.classList.contains('card')) ensure(e); e.querySelectorAll('.card').forEach(ensure); });
-  threads = d.threads.filter(t => Number.isInteger(t.a)&&Number.isInteger(t.b)&&els[t.a]?.classList.contains('card')&&els[t.b]?.classList.contains('card')).map(t => ({ a: els[t.a], b: els[t.b], color: /^#[0-9a-f]{3,8}$/i.test(t.color||'')?t.color:'#c1121f', label: String(t.label||'').slice(0,40), p: Number.isFinite(+t.p)?Math.max(0,Math.min(1,+t.p)):.5 }));
   ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = 1; ctx.clearRect(0, 0, cv.width, cv.height);
-  drawURL = d.draw || null; drawDirty = false;
-  if (d.draw) { const im = new Image(); const cb = canvasBumped; im.onload = () => { if (rid === restoreId && cb === canvasBumped) ctx.drawImage(im, 0, 0); }; im.src = d.draw; }
+  drawURL = typeof d.draw === 'string' ? d.draw : null; drawDirty = false;
+  if (drawURL) { const im = new Image(); const cb = canvasBumped; im.onload = () => { if (rid === restoreId && cb === canvasBumped) ctx.drawImage(im, 0, 0); }; im.src = drawURL; }
   zTop=Math.max(1,...[...world.querySelectorAll('.card')].map(c=>+(c.style.zIndex||1))); sel = null; drawThreads(); legend(); $('#search').dispatchEvent(new Event('input'));
 }
-let st = 0, history=[], historyIndex=-1, restoring=false, lensDirty=false, pendingTrack=false, pendingText=true, lastPushAt=0, lastPushText=false;
+let saveWarned = false, st = 0, history=[], historyIndex=-1, restoring=false, lensDirty=false, pendingTrack=false, pendingText=true, lastPushAt=0, lastPushText=false;
 // Geçmiş: yazı yazarken (text=true) 2 sn içindeki değişiklikler tek adımda birleşir.
 function historyPush(snapshotData,text){ if(restoring) return; const data=JSON.stringify(snapshotData || snapshot()); if(history[historyIndex]===data) return;
   if(text && lastPushText && Date.now()-lastPushAt<2000 && historyIndex===history.length-1 && historyIndex>0) history[historyIndex]=data;
@@ -386,8 +387,8 @@ function historyPush(snapshotData,text){ if(restoring) return; const data=JSON.s
 function flushPending(){ if(!st) return; clearTimeout(st); st=0; const t=pendingTrack, x=pendingText; pendingTrack=false; pendingText=true; if(t) historyPush(snapshot(),x); }
 function historyMove(delta){flushPending();const n=historyIndex+delta;if(n<0||n>=history.length){if(!st&&!pendingTrack)save(false);return;}historyIndex=n;lastPushText=false;restoring=true;try{restore(JSON.parse(history[n]));}finally{restoring=false;}save(false);}
 async function runSave(){ st=0; const track=pendingTrack, text=pendingText; pendingTrack=false; pendingText=true; let data;
-  try{ data=snapshot(); if(track) historyPush(data,text); await persistBoard(data, KEY); try{localStorage.removeItem(KEY);}catch(_){} }
-  catch(e){ try{ localStorage.setItem(KEY,JSON.stringify({...(data||snapshot()),savedAt:Date.now()})); }catch(_){ toast('Otomatik kayıt alanı doldu. Lütfen Kaydet düğmesiyle yedek al.'); } }
+  try{ data=snapshot(); if(track) historyPush(data,text); await persistBoard(data, KEY); saveWarned=false; try{localStorage.removeItem(KEY);}catch(_){} }
+  catch(e){ try{ localStorage.setItem(KEY,JSON.stringify({...(data||snapshot()),savedAt:Date.now()})); if(!saveWarned){ saveWarned=true; toast('Tarayıcı kaydı başarısız oldu; yedek alana yazıldı. Önemli çalışmayı Dosya → Kaydet ile de yedekle.'); } }catch(_){ toast('Otomatik kayıt başarısız: alan dolu olabilir. Lütfen Kaydet düğmesiyle yedek al.'); } }
   if(lensOn) lensDirty=true; }
 function save(track=true,kind) { legend(); pendingTrack=pendingTrack||track; if(track) pendingText=pendingText&&kind==='text'; clearTimeout(st); st=setTimeout(runSave,CONFIG.SAVE_DELAY); }
 addEventListener('pointerup', () => { if (dirty) { dirty = false; save(); } });
@@ -549,7 +550,7 @@ world.addEventListener('focusin', e => {
 world.addEventListener('input', e => { if (e.target.isContentEditable) e.target.dataset.d = 1; });
 
 /* ---------- Başlangıç ---------- */
-(async()=>{ $('#bar').inert = true; try { const d=await readBoard(KEY); if(d) restore(d); else { const legacy=JSON.parse(localStorage.getItem(KEY)||'null'); if(legacy) {restore(legacy); save(false);} else {addCard('news');addCard('note');} } historyPush(); } catch(e){addCard('news');addCard('note');} finally { loading = false; $('#bar').inert = false; } })();
+(async()=>{ $('#bar').inert = true; let d=null; try { d=await readBoard(KEY); if(d) restore(d); else { const legacy=JSON.parse(localStorage.getItem(KEY)||'null'); if(legacy) {restore(legacy); save(false);} else {addCard('news');addCard('note');} } historyPush(); } catch(e){ if(d) { persistBoard(d, KEY+'-hatali-'+Date.now()).catch(()=>{}); toast('Kayıtlı pano okunamadı; bozuk kopya ayrıca saklandı.'); } addCard('news');addCard('note'); } finally { loading = false; $('#bar').inert = false; } })();
 
 /* ---------- Sekmeler, yardım, bilgilendirme ---------- */
 const bar = $('#bar');
