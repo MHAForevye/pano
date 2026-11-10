@@ -1,121 +1,446 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Mantar Pano</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Mikro-Klima Kontrol Merkezi</title>
+  <meta name="description" content="Saatlik ve 7 günlük hava tahmini, yağış radarı, en yakın havalimanından gerçek METAR ölçümü ve mikro-klima skoru. Reklamsız, ücretsiz, çevrimdışı çalışır.">
+  <link rel="canonical" href="https://mikroklimakontrolmerkezi.forevye.workers.dev/">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="tr_TR">
+  <meta property="og:site_name" content="Mikro-Klima Kontrol Merkezi">
+  <meta property="og:title" content="Mikro-Klima Kontrol Merkezi">
+  <meta property="og:description" content="Saatlik ve 7 günlük hava tahmini, yağış radarı, en yakın havalimanından gerçek METAR ölçümü ve mikro-klima skoru. Reklamsız, ücretsiz, çevrimdışı çalışır.">
+  <meta property="og:url" content="https://mikroklimakontrolmerkezi.forevye.workers.dev/">
+  <meta property="og:image" content="https://mikroklimakontrolmerkezi.forevye.workers.dev/icon.png">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Mikro-Klima Kontrol Merkezi">
+  <meta name="twitter:description" content="Saatlik ve 7 günlük hava tahmini, yağış radarı, en yakın havalimanından gerçek METAR ölçümü ve mikro-klima skoru. Reklamsız, ücretsiz, çevrimdışı çalışır.">
+  <meta name="twitter:image" content="https://mikroklimakontrolmerkezi.forevye.workers.dev/icon.png">
+  <meta name="author" content="Forevye">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebApplication", "name": "Mikro-Klima Kontrol Merkezi", "url": "https://mikroklimakontrolmerkezi.forevye.workers.dev/", "description": "Saatlik ve 7 günlük hava tahmini, yağış radarı, en yakın havalimanından gerçek METAR ölçümü ve mikro-klima skoru. Reklamsız, ücretsiz, çevrimdışı çalışır.", "applicationCategory": "WeatherApplication", "operatingSystem": "Any", "inLanguage": "tr", "browserRequirements": "Requires JavaScript", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "TRY"}, "author": {"@type": "Organization", "name": "Forevye"}}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Mikro-Klima skoru nedir?", "acceptedAnswer": {"@type": "Answer", "text": "Mikro-Klima skoru, seçtiğin saat veya gün için yağış potansiyelini ve atmosferik gerilimi 0 ile 10 arasında tek bir sayıyla gösterir. Sıcaklık, nem, basınç, rüzgâr ve model yağışı gibi verilerden hesaplanır. Skor yükseldikçe yağış ve sağanak ihtimali artar. Formülün ayrıntısı uygulamadaki Detay sekmesinde, skorun yanındaki bilgi penceresinde yer alır. Bu skor uygulamaya özgü sezgisel bir formüldür; bilimsel olarak doğrulanmış bir indeks ya da resmi uyarı değildir."}}, {"@type": "Question", "name": "METAR nedir, uygulamada ne işe yarar?", "acceptedAnswer": {"@type": "Answer", "text": "METAR, havalimanlarında yapılan gerçek hava ölçümlerinin uluslararası standart formatıdır; sıcaklık, rüzgâr, basınç ve görüş gibi bilgileri içerir. Mikro-Klima Kontrol Merkezi, konumuna en yakın havalimanının METAR ölçümünü gösterir. Böylece modellerin tahmin ettiği değerle gerçekte ölçülen değeri yan yana görebilirsin. Veriler aviationweather.gov kaynağından alınır."}}, {"@type": "Question", "name": "Yağış radarı nasıl okunur?", "acceptedAnswer": {"@type": "Answer", "text": "Radar, yağmur bulutlarının yerini renklerle gösterir. Mavi hafif yağışı, sarı ve turuncu orta şiddeti, kırmızı yoğun yağışı ifade eder. Uygulama RainViewer verisiyle son 2 saatin görüntüsünü gösterir ve yaklaşık 10 dakikada bir yenilenir. Radar gelecek tahmini yapmaz; bulutların hareket yönüne bakarak yağışın sana ulaşıp ulaşmayacağını yorumlayabilirsin. Radar kapsamı dışındaki yerler boş görünür."}}, {"@type": "Question", "name": "Hangi hava tahmin modelleri kullanılıyor, hangisi daha doğru?", "acceptedAnswer": {"@type": "Answer", "text": "Uygulama birçok kaynaktan tahmin alır: Open-Meteo üzerinden 12 ayrı hava modeli (ECMWF, GFS, ICON, Météo-France vb.), ayrıca MET Norway ve wttr.in servisleri. Hepsini Kaynaklar sekmesinde karşılaştırır. Her model için 6 ve 24 saat sonrası tahmin cihazına kaydedilir, zamanı gelince gerçekleşenle kıyaslanır. Böylece kendi konumunda hangi modelin daha az hata yaptığını görürsün. Bu kayıtlar sadece tarayıcında saklanır."}}, {"@type": "Question", "name": "Uygulama ücretsiz mi, kurmam gerekiyor mu?", "acceptedAnswer": {"@type": "Answer", "text": "Ücretsiz ve reklamsızdır. Tarayıcıdan açabilirsin; menüden Ana ekrana ekle dersen uygulama gibi çalışır ve internet yokken son kaydedilen verileri gösterir. Resmi hava uyarıları için her zaman Meteoroloji Genel Müdürlüğü (MGM) sayfasına bakmalısın."}}]}</script>
+  <meta name="theme-color" content="#fdf1dc">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Mikro-Klima">
+  <script src="js/theme.js?v=368b16f2"></script>
+  
+  <link rel="stylesheet" href="css/fonts.css?v=f1b34a86"><link rel="stylesheet" href="css/style.css?v=16271c61"><link rel="stylesheet" href="css/classic.css?v=222beb74"><link rel="stylesheet" href="css/sade.css?v=746e927a">
+  <script src="lib/chart.umd.min.js"></script>
+<script data-goatcounter="https://havadurumu.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </head>
 <body>
-<div id="view"><div id="world">
-  <svg id="strings" width="4000" height="3000"></svg>
-  <canvas id="draw" width="4000" height="3000"></canvas>
-</div></div>
+<a class="skip-link" href="#main">İçeriğe geç</a>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><filter id="wob" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="2" seed="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/></filter><filter id="paint" x="-10%" y="-10%" width="120%" height="120%"><feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="2" seed="5" result="w"/><feDisplacementMap in="SourceGraphic" in2="w" scale="3.4" result="d"/><feTurbulence type="fractalNoise" baseFrequency="0.4" numOctaves="1" seed="2" result="g"/><feColorMatrix in="g" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -1 1.45" result="ga"/><feComposite in="d" in2="ga" operator="in"/></filter></defs></svg>
 
-<p id="hint"></p>
-<div id="toast" hidden></div>
+<div class="container">
+  <header class="topbar">
+    <div class="topbar-row">
+      <h1><span class="ico" data-ico="sun" style="--s:28px"></span>Mikro-Klima Kontrol Merkezi</h1>
+      <div class="top-actions">
+        <button id="btnSeri" class="icon-btn seri-btn" type="button" aria-haspopup="dialog" aria-label="Giriş serisi" title="Giriş serin"><span class="seri-fl" id="seriFlame"></span><span class="seri-n" id="seriN">1</span></button>
+        <button id="btnShare" class="icon-btn" aria-label="Konumu ve saati paylaş" title="Bu görünümü paylaş" data-act="shareCurrentView"><span style="font-size:18px">🔗</span></button>
+        <button id="btnFaq" class="icon-btn" aria-label="Sık sorulan sorular" title="Sık sorulan sorular"><span class="ico" data-ico="faq" style="--s:28px"></span></button>
+        <button id="btnRefresh" class="icon-btn" aria-label="Verileri yenile" title="Yenile"><span class="ico" data-ico="refresh" style="--s:22px"></span></button>
+      </div>
+    </div>
+    <div class="loc-row">
+      <span class="ico" data-ico="pin" style="--s:24px" aria-hidden="true"></span>
+      <select id="locationSelect" aria-label="Konum"></select>
+    </div>
+  </header>
 
-<div id="bar" data-tab="" data-save="idle">
-  <div class="tabs" role="group" aria-label="Araç bölümleri">
-    <button data-tab="tools" aria-expanded="false">Çiz</button><button data-tab="add" aria-expanded="false">Ekle</button><button data-tab="card" aria-expanded="false" hidden title="Seçili kartın ayarları">Kart</button><button data-tab="file" aria-expanded="false">Dosya</button>
-    <span id="modeNow" title="Etkin araç"></span>
+  <main id="main" tabindex="-1">
+    <!-- SEKME 1: TAHMİN -->
+    <section class="panel active" id="panel-today" role="tabpanel" aria-labelledby="tab-today">
+      <div id="sharedHeading" class="shared-heading" hidden>
+        <span>Paylaşılan hava durumu</span>
+        <strong id="sharedLocationName"></strong>
+      </div>
+      <div id="offBar" class="wide" hidden>Çevrimdışısın: en son kaydedilen veriler gösteriliyor.</div>
+      <div id="alertBox" class="wide"></div>
+      <a class="mgm-link wide" href="https://www.mgm.gov.tr/meteouyari/il.aspx" target="_blank" rel="noopener">Resmi uyarılar için Meteoroloji (MGM) MeteoUyarı sayfası →</a>
+
+      <div class="card hero wide" id="heroCard">
+        <div class="hero-main">
+          <span class="ico" id="heroIcon" data-ico="cloud"></span>
+          <div class="hero-temp" id="heroTemp">--°</div>
+          <div class="hero-side"><div id="heroDesc">Yükleniyor…</div><div id="heroFeels"></div><div id="heroHiLo"></div></div>
+        </div>
+        <div class="sade-line" id="sadeLine" aria-live="polite"></div>
+        <div class="hero-stats" id="heroStats"></div>
+      </div>
+
+
+      <div id="selBlock" style="display:contents">
+      <div class="mode-switch wide">
+        <button type="button" class="mode-btn active" id="modeHourly" data-act="setMode" data-arg="hourly">
+          <span class="ico" data-ico="clock" style="--s:18px"></span>
+          Saatlik
+        </button>
+        <button type="button" class="mode-btn" id="modeDaily" data-act="setMode" data-arg="daily">
+          <span class="ico" data-ico="calendar" style="--s:18px"></span>
+          7 Günlük
+        </button>
+      </div>
+
+      <div class="day-strip wide" id="dayStrip"></div>
+
+      <div class="hour-strip-container wide" id="hourStripContainer">
+        <div class="hour-strip-title" id="hourStripTitle">
+          <span class="ico" data-ico="rain" style="--s:18px"></span>
+          Saat seç
+        </div>
+        <div class="hour-strip" id="hourStrip"></div>
+      </div>
+      </div>
+
+      <div class="card wide" id="outlookCard">
+        <div class="src-head"><span class="ico" data-ico="calendar" style="--s:22px"></span><b>7 günlük bakış</b></div>
+        <div class="outlook" id="outlook"></div>
+      </div>
+      <a id="sharedHomeLink" href="./" hidden>Asıl siteye git →</a>
+
+      <button type="button" class="setting-btn wide" data-act="showTab" data-arg="detail"><span id="detailMoreTxt">Detaylandır: mikro-klima skoru, yağış grafikleri, radar →</span></button>
+    </section>
+
+    <!-- SEKME 2: DETAY -->
+    <section class="panel" id="panel-detail" role="tabpanel" aria-labelledby="tab-detail">
+      <p class="sel-hint wide">Değerler seçili saate (ya da güne) ait. Aşağıdan gün ve saati değiştirebilirsin.</p>
+
+      <div class="card">
+        <div class="score-box">
+          <div style="display:flex;justify-content:center;align-items:center;gap:8px">
+            <div class="param-label" id="scoreTitle">ANLIK SAAT BAKIŞI</div><button class="info-btn" data-info="score" aria-label="Bilgi"><span class="ico" data-ico="info" style="--s:24px"></span></button>
+          </div>
+          <div class="ico big" id="bigIcon" data-ico="cloud"></div>
+          <div class="score-value" id="indexScore">--</div>
+          <div style="display:flex;justify-content:center;align-items:center;gap:8px">
+            <div class="rain-value" id="rainAmount">-- mm</div><button class="info-btn" data-info="rain" aria-label="Bilgi"><span class="ico" data-ico="info" style="--s:24px"></span></button>
+          </div>
+          <div id="statusText" style="font-size: .85rem; color: var(--subtext); margin-top: 4px;">Yükleniyor...</div>
+        </div>
+        <div class="hourly-quick-box" id="quickBox">
+          <div><div class="quick-item-title">Sıcaklık</div><div class="quick-item-val" id="qTemp">--°C</div></div>
+          <div><div class="quick-item-title">Nem</div><div class="quick-item-val" id="qHum">--%</div></div>
+          <div><div class="quick-item-title">Rüzgar</div><div class="quick-item-val" id="qWind">-- km/h</div></div>
+          <div><div class="quick-item-title">Bulut</div><div class="quick-item-val" id="qCloud">--%</div></div>
+        </div>
+      </div>
+
+      <div class="card" id="nowCard">
+        <div class="src-head"><span class="ico" data-ico="umbrella" style="--s:22px"></span><b>Önümüzdeki 3 saat</b><span id="nowSum" style="margin-left:auto;font-size:.85rem;color:var(--ink);font-weight:700">yükleniyor…</span><button class="info-btn" data-info="now" aria-label="Bilgi"><span class="ico" data-ico="info" style="--s:24px"></span></button></div>
+        <div class="now-bars" id="nowBars"></div>
+        <div id="nowNote" class="src-stats"></div>
+      </div>
+
+      <div class="card wide" id="radarCard">
+        <div class="src-head"><span class="ico" data-ico="umbrella" style="--s:22px"></span><b>Yağış radarı</b><span id="radarMsg" style="margin-left:auto;font-size:.85rem;font-weight:700"></span></div>
+        <button type="button" class="setting-btn" id="radarBtn" data-act="radarOpen">Radarı aç</button>
+        <div id="radarMap"></div>
+        <div id="radarCtl" hidden><button type="button" class="setting-btn" id="radarPlay" data-act="radarToggle">⏸</button><input type="range" id="radarSlide" min="0" value="0" aria-label="Radar zamanı"><span id="radarTime"></span></div>
+        <div class="src-stats">Son 2 saatin radar görüntüsü (RainViewer), yaklaşık 10 dakikada bir yenilenir. Gelecek tahmini içermez. Radar kapsamı dışındaki yerler boş görünür.</div>
+      </div>
+
+      <div class="card wide" id="rtCard">
+        <div class="src-head"><span class="ico" data-ico="clock" style="--s:22px"></span><b>Yağış ne zaman başlar, biter?</b><button type="button" class="setting-btn" style="margin-left:auto" data-act="rtLoad">Yenile</button></div>
+        <div id="rtBody" class="src-stats">yükleniyor…</div>
+      </div>
+
+      <div class="card wide" id="mtCard">
+        <div class="src-head"><span class="ico" data-ico="eye" style="--s:22px"></span><b>Gerçek ölçüm: en yakın havalimanı</b></div>
+        <div id="mtBody" class="src-stats">yükleniyor…</div>
+      </div>
+
+      <div class="card">
+        <button class="info-btn abs" data-info="chart" aria-label="Bilgi"><span class="ico" data-ico="info" style="--s:24px"></span></button>
+        <h3 style="margin-top: 0; color: var(--subtext);" id="chartTitle">ZAMAN EKSENİNDE YAĞIŞ VE SKOR (0-10)</h3>
+        <div style="height: 260px;">
+          <canvas id="weatherChart" role="img" aria-label="Zaman ekseninde yağış ve skor grafiği. Aynı bilgi saatlik listede metin olarak da var."></canvas>
+        </div>
+      </div>
+
+      <div class="card" id="metricCard">
+        <div class="src-head"><span class="ico" data-ico="wind" style="--s:22px"></span><b>Ölçüm grafiği</b></div>
+        <div class="chip-row" id="metricChips"></div>
+        <div style="height: 230px;"><canvas id="metricChart" role="img" aria-label="Seçili ölçümün zaman grafiği"></canvas></div>
+        <div class="src-stats" id="metricNote"></div>
+      </div>
+
+      <div class="card">
+        <div class="src-head">
+          <span class="ico" data-ico="thermo" style="--s:22px"></span><b>Atmosferik veri matrisi</b>
+          <span style="margin-left:auto"></span><button class="info-btn" data-info="matrix" aria-label="Bilgi"><span class="ico" data-ico="info" style="--s:24px"></span></button>
+        </div>
+        <div class="matrix-scroll-area">
+          <div id="paramGrid"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEKME 3: KAYNAKLAR -->
+    <section class="panel" id="panel-sources" role="tabpanel" aria-labelledby="tab-sources">
+      <div class="card" id="srcCard">
+        <div class="src-head">
+          <span class="ico" data-ico="eye" style="--s:22px"></span><b>Kaynak karşılaştırması</b>
+          <span id="srcSummary">yükleniyor…</span>
+          <button class="info-btn" data-info="sources" aria-label="Bilgi"><span class="ico" data-ico="info" style="--s:24px"></span></button>
+        </div>
+        <div id="srcBadges" class="src-badges"></div>
+        <div class="src-scroll"><table id="srcTable" class="src-table"></table></div>
+        <div id="srcStats" class="src-stats"></div>
+      </div>
+
+      <div class="card" id="karneCard">
+        <div class="src-head"><span class="ico" data-ico="gauge" style="--s:22px"></span><b>Geçmiş doğruluk: kim haklı çıkıyor?</b><span id="karneSum" style="margin-left:auto;font-size:.85rem;color:var(--subtext)"></span><button class="info-btn" data-info="karne" aria-label="Bilgi"><span class="ico" data-ico="info" style="--s:24px"></span></button></div>
+        <div class="src-scroll"><table id="karneTable" class="src-table"></table></div>
+        <div id="karneNote" class="src-stats"></div>
+      </div>
+
+      <div class="card wide" id="memCard">
+        <div class="src-head"><span class="ico" data-ico="gauge" style="--s:22px"></span><b>Kendi karnem (hafıza)</b></div>
+        <div class="src-stats">Sayfa açıkken saatte bir, modellerin 6 ve 24 saat sonrası için tahminleri bu cihaza kaydedilir. Zamanı gelince gerçekleşenle kıyaslanır. Hata, sapma ve yağış başarısı birikir, ağırlıklar ve sıcaklık düzeltmesi buna göre ayarlanır. Veri sadece bu tarayıcıda durur; tarayıcı site verisini temizlerse silinir, bu yüzden arada "Dışa aktar" ile yedek al.</div>
+        <div id="memBox"></div>
+        <div class="mem-btns">
+          <button type="button" class="setting-btn" data-act="memToggle">Ağırlıklara uygula<span class="state" id="memSw"></span></button>
+          <button type="button" class="setting-btn" data-act="memExport">Dışa aktar (yedek)</button>
+          <button type="button" class="setting-btn" data-act="memFile">İçe aktar</button>
+          <button type="button" class="setting-btn" data-act="memReset">Belleği sıfırla</button>
+          <input type="file" id="memFile" accept="application/json" hidden>
+        </div>
+      </div>
+    </section>
+
+    <!-- SEKME 4: AYARLAR -->
+    <section class="panel" id="panel-settings" role="tabpanel" aria-labelledby="tab-settings">
+      <div class="card">
+        <h2 class="card-title">Konum</h2>
+        <div class="add-location-box" id="addLocBox">
+          <div class="stack" id="locList"></div>
+          <button id="btnGps" class="setting-btn"><span class="ico" data-ico="pin" style="--s:22px"></span>GPS konumunu otomatik al</button>
+          <p class="hint" style="margin:4px 0 0">Ya da konum adını yaz; koordinat ve rakım otomatik gelir.</p>
+          <div class="loc-inputs-grid">
+            <input type="text" id="newName" placeholder="Konum adı" aria-label="Konum adı">
+            <input type="text" id="newLat" placeholder="Enlem" aria-label="Enlem" inputmode="decimal">
+            <input type="text" id="newLon" placeholder="Boylam" aria-label="Boylam" inputmode="decimal">
+            <input type="text" id="newAlt" placeholder="Rakım (m)" aria-label="Rakım" inputmode="decimal">
+            <button id="btnAddLoc" style="background: #bfe3f7; color: #4a3426;">+ Konum ekle</button>
+          </div>
+          <button id="btnDelLoc" class="setting-btn"><span class="ico" data-ico="trash" style="--s:22px"></span>Seçili konumu sil</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2 class="card-title">Görünüm ve bildirim</h2>
+        <p class="hint">Bildirimler uygulama ya da sayfa açıkken (arka planda olabilir) çalışır; tamamen kapalıyken gelmez.</p>
+        <div class="stack">
+          <button id="btnTheme" class="setting-btn"><span class="ico" id="themeIco" data-ico="moon" style="--s:22px"></span>Gece / gündüz teması</button>
+          <div class="skin-pick" role="group" aria-label="Görünüm"><button type="button" class="setting-btn" data-act="setSkin" data-arg="sade" aria-pressed="false">Sade (önerilen)</button><button type="button" class="setting-btn" data-act="setSkin" data-arg="classic" aria-pressed="false">Klasik</button><button type="button" class="setting-btn" data-act="setSkin" data-arg="pastel" aria-pressed="false">Çizgi film</button></div>
+          <button id="btnNotif" class="setting-btn" aria-pressed="false"><span class="ico" data-ico="bell" style="--s:22px"></span>Bildirimler<span class="state" id="notifState">Kapalı</span></button>
+        </div>
+      </div>
+
+      <div class="card"><h2 class="card-title">Tercihler ve yedek</h2>
+      <div class="pref-row"><label for="prefFont">Yazı boyutu</label>
+        <select id="prefFont"><option value="15">Küçük</option><option value="17">Normal</option><option value="19">Büyük</option><option value="21">Çok büyük</option></select></div>
+      <div class="pref-row"><label for="prefTab">Açılış sekmesi</label>
+        <select id="prefTab"><option value="last">Son baktığım</option><option value="today">Tahmin</option><option value="detail">Detay</option><option value="sources">Kaynaklar</option></select></div>
+      <div class="pref-row"><label for="prefRef">Otomatik yenileme</label>
+        <select id="prefRef"><option value="5">5 dk</option><option value="10">10 dk</option><option value="30">30 dk</option><option value="60">60 dk</option></select></div>
+      <div class="pref-row"><label for="prefHot">Sıcak uyarısı<small>bu sıcaklıkta ve üstünde</small></label>
+        <input type="text" id="prefHot" inputmode="decimal" aria-label="Sıcak uyarı eşiği (°C)" placeholder="38"></div>
+      <div class="pref-row"><label for="prefCold">Soğuk uyarısı<small>bu sıcaklıkta ve altında</small></label>
+        <input type="text" id="prefCold" inputmode="decimal" aria-label="Soğuk uyarı eşiği (°C)" placeholder="0"></div>
+      <div class="pref-row"><label for="prefGust">Rüzgâr uyarısı<small>hamle km/h</small></label>
+        <input type="text" id="prefGust" inputmode="decimal" aria-label="Rüzgâr hamlesi eşiği (km/h)" placeholder="60"></div>
+      <div class="pref-btns">
+        <button type="button" id="btnBackup">Yedeği kopyala</button>
+        <button type="button" id="btnRestore">Yedekten yükle</button>
+      </div>
+      <p class="hint" style="margin:10px 0 0">Yedek; konumlarını, bu ayarları ve kristal hesabının anahtarını tek metin olarak kopyalar. Başka cihazda "Yedekten yükle" ile yapıştır. Bu metni kimseyle paylaşma: kristal hesabını açar.</p>
+    </div>
+
+      <div class="card wide">
+        <h2 class="card-title">Mağaza</h2>
+        <button id="btnStore" class="setting-btn"><span class="ico" data-ico="gem" style="--s:22px"></span>Mağazayı aç</button>
+      </div>
+
+      <div class="card wide">
+        <h2 class="card-title">Seri ateşi</h2>
+        <button type="button" id="seriToggle" class="setting-btn" aria-pressed="true"><span class="seri-mini" id="seriMini"></span>Seri ateşini göster<span class="state" id="seriToggleSt">açık</span></button>
+        <p class="hint" style="margin:10px 0 0">Uygulamayı üst üste kaç gün açtığını sayar. Yalnızca bu cihazda tutulur, istemezsen kapatabilirsin.</p>
+      </div>
+
+      <div class="card wide">
+        <h2 class="card-title">Hakkında</h2>
+        <button id="btnStudio" class="setting-btn"><span class="ico" data-ico="face" style="--s:22px"></span>Forevye · Stüdyo ve diğer uygulamalar</button>
+      </div>
+
+      <div class="card wide">
+        <h2 class="card-title">Veri durumu</h2>
+        <div class="src-stats" id="metaBox" style="margin:0 0 12px">Henüz veri alınmadı.</div>
+        <button id="btnRefresh2" class="setting-btn"><span class="ico" data-ico="refresh" style="--s:22px"></span>Şimdi yenile</button>
+      </div>
+    </section>
+  </main>
+  <div class="credit-line"><button type="button" id="btnCredit">Forevye tarafından geliştirildi</button><a href="gizlilik.html">Gizlilik politikası</a></div>
+  <p class="credit-line" style="font-size:11px;opacity:.65;margin-top:4px">Veriler: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> (CC BY 4.0), <a href="https://www.met.no/" target="_blank" rel="noopener">MET Norway</a> (CC BY 4.0), <a href="https://aviationweather.gov/" target="_blank" rel="noopener">NOAA Aviation Weather</a> (METAR), <a href="https://www.rainviewer.com/" target="_blank" rel="noopener">RainViewer</a>, <a href="https://wttr.in/" target="_blank" rel="noopener">wttr.in</a></p>
+</div>
+
+<nav class="tabbar" role="tablist" aria-label="Bölümler">
+  <div class="tabbar-inner" role="tablist">
+    <button type="button" class="tab active" id="tab-today" role="tab" aria-selected="true" aria-controls="panel-today" data-act="showTab" data-arg="today"><span class="ico" data-ico="partly"></span>Tahmin</button>
+    <button type="button" class="tab" id="tab-detail" role="tab" aria-selected="false" aria-controls="panel-detail" data-act="showTab" data-arg="detail"><span class="ico" data-ico="thermo"></span>Detay</button>
+    <button type="button" class="tab" id="tab-sources" role="tab" aria-selected="false" aria-controls="panel-sources" data-act="showTab" data-arg="sources"><span class="ico" data-ico="eye"></span>Kaynaklar</button>
+    <button type="button" class="tab" id="tab-settings" role="tab" aria-selected="false" aria-controls="panel-settings" data-act="showTab" data-arg="settings"><span class="ico" data-ico="pin"></span>Ayarlar</button>
   </div>
+</nav>
 
-  <div class="pane" data-tab="tools">
-    <div class="grp" id="modes">
-      <button data-m="select" class="on" title="Seç / taşı (V)">Seç</button>
-      <button data-m="thread" title="İki karta sırayla dokun (T)">İp</button>
-      <button data-m="pen" title="Kalem (P)">Kalem</button>
-      <button data-m="marker" title="Kalın işaretleyici (M)">İşaretleyici</button>
-      <button data-m="eraser" title="Silgi (E)">Silgi</button>
-      <button data-m="stamp" title="Mühür (S): karta veya panoya dokun">Mühür</button>
-      <input id="stampType" list="stamps" value="ÖNEMLİ" size="11" title="Mühür yazısı: istediğini yaz ya da listeden seç"><datalist id="stamps"><option value="ÖNEMLİ"><option value="TEKRAR ET"><option value="SINAV"><option value="DOĞRU ✔"><option value="YANLIŞ ✘"><option value="GİZLİ"><option value="ŞÜPHELİ"></datalist>
-    </div>
-    <input type="color" id="color" value="#c1121f" title="İp, kalem ve işaretleyici rengi">
-    <label class="rng" title="Kalem kalınlığı (işaretleyici ve silgi buna göre kalınlaşır)">Kalınlık <input type="range" id="size" min="1" max="12" value="3"></label>
-    <div class="grp">
-      <button id="lensBtn" title="Parmağın / imlecin altını büyütür">Büyüteç</button>
-      <button id="fitBtn" title="Tüm kartları ekrana sığdır">⤢ Hepsini göster</button>
-      <button id="legendBtn" title="Sınıf listesini aç/kapat">Sınıflar</button>
-      <button id="helpBtn" title="Nasıl kullanılır?">? Yardım</button>
-    </div>
-  </div>
 
-  <div class="pane" data-tab="add">
-    <div class="grp">
-      <button id="addPolaroid">+ Fotoğraf</button>
-      <button id="addNews">+ Kupür</button>
-      <button id="addNews2" title="Yan yana iki kolon: her kolon kendi içinde aşağı doğru uzar">+ Kupür (2 kolon)</button>
-      <button id="addPostit" title="Küçük sarı yapışkan not">+ Post-it</button>
-      <button id="addNote">+ Not</button>
-      <button id="addDoc">+ Kâğıt</button>
-      <button id="addTl">+ Zaman çizelgesi</button>
-      <input type="file" id="file" accept="image/*" hidden>
+<div class="studio-page" id="faqPage" role="dialog" aria-modal="true" aria-label="Sık sorulan sorular">
+  <div class="studio-inner">
+    <button type="button" class="studio-back" id="faqBack"><span class="ico" data-ico="arrow" style="--s:22px;transform:rotate(90deg)"></span>Geri</button>
+    <div class="studio-hero">
+      <span class="ico" data-ico="faq"></span>
+      <h2 class="sh-title faq-title">Sık sorulan sorular</h2>
+      <p class="studio-sub">Mikro-Klima Kontrol Merkezi ücretsiz bir hava durumu uygulamasıdır: saatlik ve 7 günlük tahmin, yağış radarı, havalimanı METAR ölçümü ve tahmin doğruluğu takibi tek ekranda.</p>
     </div>
-  </div>
-
-  <div class="pane" data-tab="card">
-    <div class="grp">
-      <input id="cat" list="cats" placeholder="Etiket yaz…" size="11" title="Seçili kartın etiketi: istediğini yaz" disabled><datalist id="cats"><option value="Önemli"><option value="Fikir"><option value="Soru"><option value="Örnek"><option value="Tarih"><option value="Diğer"></datalist><input type="color" id="catColor" title="Etiket rengi" disabled>
-      <button id="smaller" title="Küçült (-)">−</button><button id="bigger" title="Büyüt (+)">+</button>
+    <div class="faq-wrap" id="sss">
+      <details><summary>Mikro-Klima skoru nedir?</summary><p>Mikro-Klima skoru, seçtiğin saat veya gün için yağış potansiyelini ve atmosferik gerilimi 0 ile 10 arasında tek bir sayıyla gösterir. Sıcaklık, nem, basınç, rüzgâr ve model yağışı gibi verilerden hesaplanır. Skor yükseldikçe yağış ve sağanak ihtimali artar. Formülün ayrıntısı uygulamadaki Detay sekmesinde, skorun yanındaki bilgi penceresinde yer alır. Bu skor uygulamaya özgü sezgisel bir formüldür; bilimsel olarak doğrulanmış bir indeks ya da resmi uyarı değildir.</p></details>
+      <details><summary>METAR nedir, uygulamada ne işe yarar?</summary><p>METAR, havalimanlarında yapılan gerçek hava ölçümlerinin uluslararası standart formatıdır; sıcaklık, rüzgâr, basınç ve görüş gibi bilgileri içerir. Mikro-Klima Kontrol Merkezi, konumuna en yakın havalimanının METAR ölçümünü gösterir. Böylece modellerin tahmin ettiği değerle gerçekte ölçülen değeri yan yana görebilirsin. Veriler aviationweather.gov kaynağından alınır.</p></details>
+      <details><summary>Yağış radarı nasıl okunur?</summary><p>Radar, yağmur bulutlarının yerini renklerle gösterir. Mavi hafif yağışı, sarı ve turuncu orta şiddeti, kırmızı yoğun yağışı ifade eder. Uygulama RainViewer verisiyle son 2 saatin görüntüsünü gösterir ve yaklaşık 10 dakikada bir yenilenir. Radar gelecek tahmini yapmaz; bulutların hareket yönüne bakarak yağışın sana ulaşıp ulaşmayacağını yorumlayabilirsin. Radar kapsamı dışındaki yerler boş görünür.</p></details>
+      <details><summary>Hangi hava tahmin modelleri kullanılıyor, hangisi daha doğru?</summary><p>Uygulama birçok kaynaktan tahmin alır: Open-Meteo üzerinden 12 ayrı hava modeli (ECMWF, GFS, ICON, Météo-France vb.), ayrıca MET Norway ve wttr.in servisleri. Hepsini Kaynaklar sekmesinde karşılaştırır. Her model için 6 ve 24 saat sonrası tahmin cihazına kaydedilir, zamanı gelince gerçekleşenle kıyaslanır. Böylece kendi konumunda hangi modelin daha az hata yaptığını görürsün. Bu kayıtlar sadece tarayıcında saklanır.</p></details>
+      <details><summary>Uygulama ücretsiz mi, kurmam gerekiyor mu?</summary><p>Ücretsiz ve reklamsızdır. Tarayıcıdan açabilirsin; menüden Ana ekrana ekle dersen uygulama gibi çalışır ve internet yokken son kaydedilen verileri gösterir. Resmi hava uyarıları için her zaman Meteoroloji Genel Müdürlüğü (MGM) sayfasına bakmalısın.</p></details>
     </div>
-    <label class="rng" title="Seçili kartın açısı (serbest)">Açı <input type="range" id="rot" min="-180" max="180" value="0" disabled></label><button id="rot0" title="Açıyı sıfırla">↺</button>
-    <label class="rng" title="Seçili fotoğrafın parlaklığı">Parlaklık <input type="range" id="bright" min="30" max="200" value="100" disabled></label>
-    <div class="grp">
-      <button id="front" title="Öne getir">Öne</button><button id="back" title="Arkaya gönder">Arkaya</button><button id="dup" title="Ctrl+D">Çoğalt</button><button id="del" class="danger">Seçileni sil</button>
-    </div>
-  </div>
-
-  <div class="pane" data-tab="file">
-    <small id="saveState" role="status" aria-live="polite">Otomatik kayıt açık</small>
-    <div class="grp">
-      <input id="search" type="search" placeholder="Kartlarda ara (Ctrl+F)" aria-label="Kartlarda ara"><small id="searchCount" aria-live="polite"></small><button id="exportSelected" title="Seçili kartı PNG olarak indir">Seçili kartı indir</button><button id="clear" class="danger">Çizimi sil</button>
-      <button id="saveJson" title="Panonu dosya olarak yedekle">Kaydet</button><button id="openJson" title="Yedek dosyasını aç">Aç</button><input type="file" id="jsonFile" accept=".json" hidden>
-    </div>
-    <div class="grp">
-      <select id="fmt" title="Çıktı türü ve kalitesi">
-        <option value="png1">Resim (PNG) · Normal</option>
-        <option value="png2" selected>Resim (PNG) · Yüksek</option>
-        <option value="png3">Resim (PNG) · Çok yüksek</option>
-        <option value="A4">Yazıcı: A4 (PDF)</option>
-        <option value="A3">Yazıcı: A3 (PDF)</option>
-        <option value="POSTER">Yazıcı: Poster (PDF)</option>
-      </select>
-      <select id="split" title="Panoyu kaç parçaya bölüp indireyim">
-        <option value="1">Tek parça</option>
-        <option value="2">4 parçaya böl (2×2)</option>
-        <option value="3">9 parçaya böl (3×3)</option>
-      </select>
-      <label class="rng" title="Boş kenarları kırp, sayfayı doldur"><input type="checkbox" id="fit" checked> Dolu alana sığdır</label>
-      <button id="png" class="main">İndir</button>
-    </div>
-    <small id="expInfo"></small>
   </div>
 </div>
 
-<div id="legend"></div>
-<div id="lens" hidden><div id="lw"></div></div>
+<div class="studio-page" id="studioPage" role="dialog" aria-modal="true" aria-label="Forevye">
+  <div class="studio-inner">
+    <button type="button" class="studio-back" id="studioBack"><span class="ico" data-ico="arrow" style="--s:22px;transform:rotate(90deg)"></span>Geri</button>
 
-<div id="help" hidden>
-  <div class="panel">
-    <h2>Mantar Pano nasıl kullanılır?</h2>
-    <h3>Gezinme</h3>
-    <p><b>Bilgisayar:</b> tekerlekle yakınlaştır, boş yeri sürükleyerek gez.<br><b>Telefon:</b> iki parmakla yakınlaştır ve kaydır, tek parmakla boş yeri sürükle. Kaybolduysan <b>⤢ Hepsini göster</b>.</p>
-    <h3>Kart ekleme ve düzenleme</h3>
-    <p><b>＋ Ekle</b> sekmesinden fotoğraf, kupür (1 ya da 2 kolonlu), not, küçük sarı post-it, kâğıt ya da zaman çizelgesi ekle. Post-it kartın üstüne bırakılınca <b>yapışır</b> ve kartla birlikte taşınır, döner, büyür; üstteki koyu şeritten ya da ✥ tutamacından tutup çekersen kopar. Yazıya dokunup değiştir. Kartı seçince köşelerde tutamaçlar çıkar: <b>✕</b> sil · <b>sarı nokta</b> boyut · <b>↻</b> serbest açı · <b>✥</b> taşı. <b>Kart</b> sekmesinde etiket, açı ve fotoğraf parlaklığı var.</p>
-    <h3>İp, çizim, mühür</h3>
-    <p><b>İp</b> modunda sırayla iki karta dokun; ipe dokunup etiket yaz, etiketi sürükleyerek kaydır. <b>Kalem / İşaretleyici / Silgi</b> ile pano üzerine çiz. <b>Mühür</b> modunda kutuya yazdığın yazıyı karta ya da panoya bas.</p>
-    <h3>Kısayollar ve ekleme</h3><p><b>Ctrl+Z / Ctrl+Y:</b> geri al / yinele · <b>Ctrl+D:</b> çoğalt · <b>Ctrl+F:</b> ara · <b>Oklar:</b> kartı 1 px, Shift+ok 10 px taşı. Kartları hizalamak için 8 px yakınlıkta otomatik yakalama olur; Alt basılıyken kapatılır. Dosyaları doğrudan panoya sürükleyip bırakabilirsin. Seçili kartı ayrı PNG indirebilirsin.</p><h3>Kaydetme</h3>
-    <p>Pano bu tarayıcıda otomatik kaydedilir. Başka cihaza taşımak ya da yedek için <b>Kaydet</b> düğmesiyle (Dosya paneli) dosya indir, <b>Aç</b> ile geri yükle.</p>
-    <h3>Çıktı alma</h3>
-    <p><b>Resim (PNG):</b> paylaşmak için. Kalite arttıkça resim daha net ama dosya daha büyük olur (çözünürlük piksel yani resmi oluşturan nokta sayısıdır; 1 piksel ekrandaki tek bir noktadır).<br><b>Yazıcı (PDF):</b> kâğıda basmak için. <b>4 ya da 9 parçaya böl</b> dersen pano büyük çıkar: her parçayı ayrı A4'e bas, kenarlarını hizalayıp yan yana yapıştır.</p>
-    <button data-close="1" class="main">Anladım</button>
+    <div class="studio-hero">
+      <span class="ico" data-ico="face"></span>
+      <h2 class="sh-title">Forevye</h2>
+      <p class="studio-sub">Mikro-Klima Kontrol Merkezi, <b>Forevye</b> tarafından tasarlandı ve geliştirildi.</p>
+    </div>
+
+    <h3 class="studio-sec">İletişim</h3>
+    <div class="card studio-card">
+      <div class="param-label">E-posta</div>
+      <a class="studio-mail" id="studioMail" href="#" aria-label="E-posta gönder">E-postayı göster</a>
+    </div>
+
+    <h3 class="studio-sec">Diğer uygulamalar</h3>
+    <div class="card studio-card app-list"><a href="https://mhaforevye.github.io/pano/" target="_blank" rel="noopener"><b>Mantar Pano</b><small>Fotoğraf, not ve iplerle çalışma panosu</small></a></div>
+
+    <p class="studio-foot">© Forevye</p>
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script type="module" src="app.js"></script>
+<div class="seri-ov" id="seriOv" role="dialog" aria-modal="true" aria-labelledby="seriTtl" hidden>
+  <div class="seri-card">
+    <div class="seri-big" id="seriBig"></div>
+    <div class="seri-num" id="seriNum">1</div>
+    <h2 class="seri-ttl" id="seriTtl">günlük seri</h2>
+    <p class="seri-msg" id="seriMsg"></p>
+    <div class="seri-week" id="seriWeek"></div>
+    <div class="seri-stats" id="seriStats"></div>
+    <button type="button" class="setting-btn" id="seriStore"><span class="ico" data-ico="gem" style="--s:22px"></span>Mağazayı aç</button>
+    <button type="button" class="setting-btn" id="seriClose">Tamam</button>
+  </div>
+</div>
+
+<div class="studio-page" id="storePage" role="dialog" aria-modal="true" aria-label="Mağaza">
+  <div class="studio-inner">
+    <button type="button" class="studio-back" id="storeBack"><span class="ico" data-ico="arrow" style="--s:22px;transform:rotate(90deg)"></span>Geri</button>
+
+    <div class="studio-hero">
+      <span class="ico" data-ico="gem"></span>
+      <h2 class="sh-title">Mağaza</h2>
+      <p class="studio-sub">Siteyi her gün açtığında <b>30 kristal</b> kazanırsın. Kristallerle Astrophoto Cam için aktivasyon kodu alabilirsin.</p>
+    </div>
+
+    <h3 class="studio-sec">Hesabım</h3>
+    <div class="card studio-card">
+      <div class="k-stat">
+        <div><div class="param-label">Kristal bakiyen</div><div class="k-big"><span id="kBal">0</span><span class="ico k-gem" data-ico="gem" style="--s:34px"></span></div></div>
+        <div style="text-align:right"><div class="param-label">Site ID'n</div><div class="k-big k-id" id="kId">--------</div><button type="button" id="kCopyId" class="k-mini">Kopyala</button></div>
+      </div>
+      <div class="src-stats" id="kToday"></div>
+      <div class="stack" style="margin-top:10px" id="kOldWrap" hidden><button type="button" id="kRestoreOld" class="setting-btn">Önceki hesabımı geri yükle</button><small class="src-stats" style="margin:6px 0 0">Sunucu eski hesabını bulamadığı için yeni hesap açıldı. Eski hesabın bu cihazda duruyor; geri yüklersen bakiyen geri gelir.</small></div>
+      <div class="pref-row" style="margin-top:10px"><label for="kCode">Hediye kodu<small>arkadaşından geldiyse</small></label>
+        <input type="text" id="kCode" maxlength="20" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX-XXXXX"></div>
+      <div class="stack" style="margin-top:10px"><button type="button" id="kCodeUse" class="setting-btn">Kodu kullan</button></div>
+    </div>
+
+    <h3 class="studio-sec">Aktivasyon paketleri</h3>
+    <div class="card studio-card">
+      <div class="pref-row"><label for="kCamId">Astrophoto Cam ID'n<small>mail taslağına yazılır</small></label>
+        <input type="text" id="kCamId" maxlength="60" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="ID"></div>
+      <div class="stack" id="kPacks" style="margin-top:10px"></div>
+      <p class="hint" id="kLow" style="margin:10px 0 0" hidden>Yetersiz kristal! Günlük giriş yaparak kristal biriktirmeye devam et.</p>
+      <div class="k-pending" id="kPending" hidden>
+        <p class="hint" id="kPendingTx" style="margin:0 0 8px"></p>
+        <div class="stack">
+          <button type="button" id="kMailAgain" class="setting-btn">Maili tekrar aç</button>
+          <button type="button" id="kMailGmail" class="setting-btn">Gmail'de aç</button>
+          <button type="button" id="kMailCopy" class="setting-btn">Mail metnini kopyala</button>
+          <button type="button" id="kMailDone" class="setting-btn">Talebi gönderdim, gizle</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="kHistWrap" style="display:none">
+      <h3 class="studio-sec">Son talepler</h3>
+      <div class="card studio-card"><div class="src-stats" id="kHist" style="margin:0"></div></div>
+    </div>
+
+    <div id="kOwner" hidden>
+      <h3 class="studio-sec">Hediye</h3>
+      <div class="card studio-card">
+        <div class="pref-row"><label for="kAdm">Yönetici anahtarı<small>sunucudaki ADMIN_TOKEN</small></label>
+          <input type="password" id="kAdm" autocomplete="off" spellcheck="false" placeholder="anahtar"></div>
+        <div class="pref-row"><label for="kGiftAmt">Eklenecek kristal</label>
+          <input type="text" id="kGiftAmt" inputmode="numeric" autocomplete="off" value="1000"></div>
+        <div class="pref-row" style="margin-top:10px"><label for="kGiftTo">Arkadaşın Site ID'si<small>kod üretmek için; kristal eklemede boşsa kendi ID'n</small></label>
+          <input type="text" id="kGiftTo" inputmode="numeric" maxlength="8" autocomplete="off" placeholder="8 haneli ID"></div>
+        <div class="k-big k-id" id="kGiftOut" style="margin-top:10px"></div>
+        <div class="stack" style="margin-top:10px">
+          <button type="button" id="kGiftMake" class="setting-btn">Kod üret</button>
+          <button type="button" id="kGiftAdd" class="setting-btn">Kristal ekle (doğrudan)</button>
+          <button type="button" id="kGiftClose" class="setting-btn">Bu bölümü kapat</button>
+        </div>
+        <div class="src-stats" id="kMade" style="margin:10px 0 0"></div>
+        <div class="param-label" style="margin-top:14px">Gelen maili doğrula</div>
+        <textarea id="kVerIn" rows="5" style="width:100%;box-sizing:border-box;margin-top:6px" placeholder="Gelen mailin tamamını buraya yapıştır" autocomplete="off" spellcheck="false"></textarea>
+        <div class="stack" style="margin-top:10px"><button type="button" id="kVerBtn" class="setting-btn">Maili doğrula</button><button type="button" id="kVerDone" class="setting-btn">Talebi tamamlandı say</button></div>
+        <div class="src-stats" id="kVerOut" style="margin:10px 0 0;white-space:pre-wrap"></div>
+      </div>
+    </div>
+
+    <p class="studio-foot">Paketi aldığında mail taslağı açılır. Kod, doğrulamadan sonra mail ile gönderilir.</p>
+    <p class="studio-foot" style="opacity:.6">Sayfa v9 · <span id="kVer">kristal.js eski ya da yüklenmedi</span></p>
+  </div>
+</div>
+
+<div class="info-overlay" id="infoOverlay">
+  <div class="info-sheet" role="dialog" aria-modal="true" aria-labelledby="infoTitle">
+    <div class="info-sheet-head"><b id="infoTitle">Bilgilendirme</b></div>
+    <div class="doc-h">BİLGİLENDİRME:</div>
+    <p id="infoText"></p>
+    <button id="infoClose">Anladım</button>
+  </div>
+</div>
+
+<script src="js/core.js?v=2a6cb63a"></script>
+<script src="js/app.js?v=05f0f8af"></script>
+<script src="js/kristal.js?v=19a0e8ac"></script>
+<script src="js/seri.js?v=1d58928d"></script>
 </body>
 </html>
